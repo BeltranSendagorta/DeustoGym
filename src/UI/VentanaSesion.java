@@ -15,7 +15,7 @@ public class VentanaSesion {
         frame.getContentPane().setBackground(Color.BLACK);
         frame.setLayout(new BorderLayout());
 
-        // Configuración del nombre de la empresa
+        // Configuración del nombre
         JLabel nombreEmpresaLabel = new JLabel("DeustoGym");
         nombreEmpresaLabel.setForeground(Color.WHITE);
         nombreEmpresaLabel.setFont(new Font("Arial", Font.BOLD, 24));

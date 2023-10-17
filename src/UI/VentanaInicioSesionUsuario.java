@@ -29,7 +29,7 @@ public class VentanaInicioSesionUsuario {
         JPasswordField contraseñaPasswordField = new JPasswordField(15);
         agregarComponente(panelInicioSesion, contraseñaPasswordField, 1, 1, gbc);
 
-        JButton registrarseButton = new JButton("¿Aun no estás registrado?");
+        JButton registrarseButton = new JButton("¿ Aun no estás registrado ?");
         registrarseButton.addActionListener(e -> abrirVentanaRegistro());
         agregarComponente(panelInicioSesion, registrarseButton, 1, 2, gbc);
 

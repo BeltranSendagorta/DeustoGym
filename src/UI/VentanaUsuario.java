@@ -1,13 +1,9 @@
 package UI;
 
-import com.toedter.calendar.JCalendar;
-
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Calendar;
-import java.util.Date;
 
 public class VentanaUsuario {
     private JFrame frame;
@@ -18,50 +14,61 @@ public class VentanaUsuario {
         frame = new JFrame("Ventana de Usuario");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setBackground(Color.WHITE); // Fondo blanco para mayor contraste
+        frame.getContentPane().setBackground(Color.WHITE);
         frame.setLayout(new BorderLayout());
 
-        // Componente para mostrar el perfil del usuario
         JLabel perfilLabel = new JLabel("Perfil del Usuario: " + nombreUsuario);
         perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
-        perfilLabel.setForeground(Color.BLACK); // Texto en negro para mayor contraste
+        perfilLabel.setForeground(Color.BLACK);
         frame.add(perfilLabel, BorderLayout.NORTH);
 
-        // Panel para el calendario
-        JPanel panelCalendario = new JPanel(new BorderLayout());
+        JPanel panelTabla = new JPanel(new BorderLayout());
 
-        // Agregar el JCalendar
-        JCalendar jCalendar = new JCalendar();
-        panelCalendario.add(jCalendar, BorderLayout.CENTER);
-
-        // Inicializar el modelo de lista y la lista de actividades
-        modeloLista = new DefaultListModel<>();
-        listaActividades = new JList<>(modeloLista);
-        listaActividades.setBackground(new Color(240, 240, 240)); // Fondo gris claro para la lista
-        JScrollPane scrollLista = new JScrollPane(listaActividades);
-        frame.add(scrollLista, BorderLayout.EAST);
-
-        // Agregar un listener para manejar la selección de días
-        jCalendar.getDayChooser().addPropertyChangeListener(new PropertyChangeListener() {
+        // Crear la tabla
+        JTable tablaSemanas = new JTable();
+        DefaultTableModel modeloTabla = new DefaultTableModel(0, 8) {
             @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                if ("day".equals(evt.getPropertyName())) {
-                    Date selectedDate = jCalendar.getDate();
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTime(selectedDate);
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
-                    int diaSemana = calendar.get(Calendar.DAY_OF_WEEK);
+        // Añadir las horas en la primera columna
+        for (int i = 9; i <= 20; i++) {
+            modeloTabla.addRow(new Object[]{i + ":00", null, null, null, null, null, null, null});
+        }
 
-                    if (diaSemana == Calendar.TUESDAY || diaSemana == Calendar.THURSDAY) {
-                        mostrarDialogoOpcionesReserva();
-                    } else {
-                        ocultarOpcionesReserva();
-                    }
+        // Añadir los días de la semana como encabezados de columna
+        modeloTabla.setColumnIdentifiers(new Object[]{"Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"});
+
+        tablaSemanas.setModel(modeloTabla);
+        tablaSemanas.setGridColor(Color.BLACK);
+        tablaSemanas.setShowGrid(true);
+
+        // Activar la selección de celdas en lugar de filas
+        tablaSemanas.setCellSelectionEnabled(true);
+
+        // Agregar un escucha de eventos de clic para manejar la selección de celdas
+        tablaSemanas.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int row = tablaSemanas.rowAtPoint(evt.getPoint());
+                int col = tablaSemanas.columnAtPoint(evt.getPoint());
+                if (row >= 0 && col > 0) {  // Evitar la primera columna (horas)
+                    // Aquí puedes manejar la lógica para la celda seleccionada
+                    System.out.println("Celda seleccionada: " + modeloTabla.getValueAt(row, col));
                 }
             }
         });
 
-        // Agregar un listener para manejar la selección de entrenamientos
+        panelTabla.add(new JScrollPane(tablaSemanas), BorderLayout.CENTER);
+
+        modeloLista = new DefaultListModel<>();
+        listaActividades = new JList<>(modeloLista);
+        listaActividades.setBackground(new Color(240, 240, 240));
+        JScrollPane scrollLista = new JScrollPane(listaActividades);
+        frame.add(scrollLista, BorderLayout.EAST);
+
         listaActividades.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -71,25 +78,7 @@ public class VentanaUsuario {
             }
         });
 
-        frame.add(panelCalendario, BorderLayout.CENTER);
-    }
-
-    private void mostrarDialogoOpcionesReserva() {
-        // Crear un cuadro de diálogo con las opciones de reserva
-        String[] opciones = {"Crossfit 22:00", "Spinning 16:00"};
-        String seleccion = (String) JOptionPane.showInputDialog(frame, "Selecciona una opción:",
-                "Opciones de Reserva", JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
-
-        // Si se selecciona una opción, añadirla a la lista de actividades
-        if (seleccion != null) {
-            modeloLista.addElement(seleccion);
-            mostrarDialogoReservaExitosa(seleccion);
-        }
-    }
-
-    private void ocultarOpcionesReserva() {
-        // Limpiar la lista de actividades
-        modeloLista.clear();
+        frame.add(panelTabla, BorderLayout.CENTER);
     }
 
     private void mostrarDialogoReservaExitosa(String entrenamientoSeleccionado) {

@@ -53,6 +53,9 @@ public class VentanaSesion {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Lógica para la ventana de inicio de sesión del monitor
+                VentanaInicioSesionMonitor ventanaInicioSesionMonitor = new VentanaInicioSesionMonitor();
+                ventanaInicioSesionMonitor.mostrarVentana();
+                frame.dispose(); // Cerrar la ventana actual
             }
         });
         panelBotones.add(iniciarSesionMonitorButton);
@@ -63,6 +66,9 @@ public class VentanaSesion {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Lógica para la ventana de inicio de sesión del administrador
+                VentanaInicioSesionAdministrador ventanaInicioSesionAdministrador = new VentanaInicioSesionAdministrador();
+				ventanaInicioSesionAdministrador.mostrarVentana();
+                frame.dispose(); // Cerrar la ventana actual
             }
         });
         panelBotones.add(iniciarSesionAdminButton);

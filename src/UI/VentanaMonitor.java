@@ -28,7 +28,7 @@ public class VentanaMonitor {
         frame.setLayout(new BorderLayout());
 
         JLabel perfilLabel = new JLabel("Perfil del Monitor: " + nombreMonitor);
-        perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
+        perfilLabel.setHorizontalAlignment(JLabel.LEFT);
         perfilLabel.setForeground(Color.BLACK);
         frame.add(perfilLabel, BorderLayout.NORTH);
 
@@ -51,7 +51,7 @@ public class VentanaMonitor {
         listaActividades = new JList<>(modeloLista);
         listaActividades.setBackground(new Color(240, 240, 240));
         JScrollPane scrollLista = new JScrollPane(listaActividades);
-        frame.add(scrollLista, BorderLayout.EAST);
+        frame.add(scrollLista, BorderLayout.WEST);
 
         JPanel panelClases = new JPanel();
         panelClases.setLayout(new BoxLayout(panelClases, BoxLayout.Y_AXIS));
@@ -68,7 +68,7 @@ public class VentanaMonitor {
             panelClases.add(labelClase);
             clasesLabels.put(labelClase, clase);
         }
-        frame.add(panelClases, BorderLayout.EAST);
+        frame.add(panelClases, BorderLayout.WEST);
         
         // Ajuste de ancho y altura
         panelClases.setPreferredSize(new Dimension(200, frame.getHeight())); // Ancho de 150
@@ -202,7 +202,6 @@ public class VentanaMonitor {
             JOptionPane.showMessageDialog(frame, "Te has apuntado a la clase de " + claseSeleccionada);
         }
     }
-
     private void agregarClaseSpinningAClasesApuntadas(int row, int col) {
         String hora = (String) tablaSemanasDisponibles.getValueAt(row, 0);
         String dia = tablaSemanasDisponibles.getColumnName(col);
@@ -216,8 +215,6 @@ public class VentanaMonitor {
         }
         clasesPorDia.get(dia).add("Spinning");
     }
-    
-
     private int obtenerFilaHora(String hora) {
         DefaultTableModel modelo = (DefaultTableModel) tablaSemanasApuntado.getModel();
         for (int fila = 0; fila < modelo.getRowCount(); fila++) {
@@ -228,7 +225,6 @@ public class VentanaMonitor {
         }
         return -1;
     }
-
     private int obtenerIndiceColumna(String nombreColumna, DefaultTableModel modeloTabla) {
         for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
             if (modeloTabla.getColumnName(i).equals(nombreColumna)) {
@@ -240,6 +236,7 @@ public class VentanaMonitor {
     public void mostrarVentana() {
         frame.setVisible(true);
     }
+
     public static void main(String[] args) {
         VentanaMonitor ventanaMonitor = new VentanaMonitor("MonitorPrueba");
         ventanaMonitor.mostrarVentana();

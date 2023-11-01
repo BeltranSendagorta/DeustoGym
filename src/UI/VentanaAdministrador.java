@@ -3,243 +3,187 @@ package UI;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
+import java.util.*;
 
 public class VentanaAdministrador {
-	private JFrame frame;
-	private DefaultListModel<String> modeloLista;
-	private JList<String> listaActividades;
-	private JTable tablaSemanasApuntado;
-	private JTable tablaSemanasDisponibles;
+    private JFrame frame;
+    private DefaultListModel<String> modeloLista;
+    private JTable tablaSemanasApuntado;
+    private Map<String, Integer> gananciasProfesores;
 
-	public VentanaAdministrador(String nombreAdministrador) {
-		frame = new JFrame("Ventana de Monitor");
-		frame.setSize(800, 600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setLayout(new BorderLayout());
+    public VentanaAdministrador(String nombreAdministrador) {
+        frame = new JFrame("Ventana de Administrador");
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setBackground(Color.WHITE);
+        frame.setLayout(new BorderLayout());
 
-		JLabel perfilLabel = new JLabel("Perfil del Monitor: " + nombreAdministrador);
-		perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
-		perfilLabel.setForeground(Color.BLACK);
-		frame.add(perfilLabel, BorderLayout.NORTH);
+        JLabel perfilLabel = new JLabel("Perfil del Administrador: " + nombreAdministrador);
+        perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
+        perfilLabel.setForeground(Color.BLACK);
+        frame.add(perfilLabel, BorderLayout.NORTH);
 
-		// Crear el panel de pestañas
-		JTabbedPane tabbedPane = new JTabbedPane();
+        JTabbedPane tabbedPane = new JTabbedPane();
+        JPanel panelApuntado = new JPanel(new BorderLayout());
+        tablaSemanasApuntado = crearTabla();
+        panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
+        tabbedPane.addTab("Clases Disponibles", panelApuntado);
+        frame.add(tabbedPane, BorderLayout.CENTER);
 
-		// Pestaña de clases apuntadas
-		JPanel panelApuntado = new JPanel(new BorderLayout());
-		tablaSemanasApuntado = crearTabla();
-		panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
+        modeloLista = new DefaultListModel<>();
+        JList<String> listaActividades = new JList<>(modeloLista);
+        listaActividades.setBackground(new Color(240, 240, 240));
+        JScrollPane scrollLista = new JScrollPane(listaActividades);
+        frame.add(scrollLista, BorderLayout.EAST);
 
-		// Pestaña de clases disponibles
-		JPanel panelDisponibles = new JPanel(new BorderLayout());
-		tablaSemanasDisponibles = crearTablaConBotones();
-		panelDisponibles.add(new JScrollPane(tablaSemanasDisponibles), BorderLayout.CENTER);
+        gananciasProfesores = new HashMap<>();
+        calcularGananciasIniciales();
 
-		// Agregar pestañas al panel de pestañas
-		tabbedPane.addTab("Clases Apuntadas", panelApuntado);
-		tabbedPane.addTab("Clases Disponibles", panelDisponibles);
+        tablaSemanasApuntado.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                int row = tablaSemanasApuntado.rowAtPoint(evt.getPoint());
+                int col = tablaSemanasApuntado.columnAtPoint(evt.getPoint());
 
-		frame.add(tabbedPane, BorderLayout.CENTER);
+                if (row >= 0 && col > 0) {
+                    Object cellValue = tablaSemanasApuntado.getValueAt(row, col);
+                    if (cellValue != null) {
+                        String claseSeleccionada = cellValue.toString();
+                        mostrarDialogoClase(claseSeleccionada);
+                    }
+                }
+            }
+        });
 
-		modeloLista = new DefaultListModel<>();
-		listaActividades = new JList<>(modeloLista);
-		listaActividades.setBackground(new Color(240, 240, 240));
-		JScrollPane scrollLista = new JScrollPane(listaActividades);
-		frame.add(scrollLista, BorderLayout.EAST);
+        frame.setVisible(true);
+    }
 
-		listaActividades.addMouseListener(new java.awt.event.MouseAdapter() {
-			@Override
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				int index = listaActividades.locationToIndex(evt.getPoint());
-				String entrenamientoSeleccionado = modeloLista.getElementAt(index);
-				mostrarDialogoReservaExitosa(entrenamientoSeleccionado);
-			}
-		});
+    private JTable crearTabla() {
+        JTable tabla = new JTable();
+        DefaultTableModel modeloTabla = new DefaultTableModel(0, 8) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
 
-		frame.setVisible(true);
-	}
+        Random random = new Random();
+        String[] tiposClase = { "Yoga", "Spinning", "Core" };
+        for (int i = 9; i <= 20; i++) {
+            String hora = i + ":00";
+            String[] clasesAleatorias = generarClasesAleatorias(tiposClase, 7);
+            modeloTabla.addRow(new Object[] { hora, clasesAleatorias[0], clasesAleatorias[1], clasesAleatorias[2], clasesAleatorias[3], clasesAleatorias[4], clasesAleatorias[5], clasesAleatorias[6] });
+        }
 
-	private JTable crearTabla() {
-		JTable tabla = new JTable();
-		DefaultTableModel modeloTabla = new DefaultTableModel(0, 8) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				return false;
-			}
-		};
+        modeloTabla.setColumnIdentifiers(new Object[] { "Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" });
 
-		// Añadir las horas en la primera columna
-		for (int i = 9; i <= 20; i++) {
-			modeloTabla.addRow(new Object[] { i + ":00", null, null, null, null, null, null, null });
-		}
+        tabla.setModel(modeloTabla);
+        tabla.setGridColor(Color.BLACK);
+        tabla.setShowGrid(true);
+        tabla.setCellSelectionEnabled(true);
 
-		// Añadir los días de la semana como encabezados de columna
-		modeloTabla.setColumnIdentifiers(
-				new Object[] { "Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" });
+        return tabla;
+    }
 
-		tabla.setModel(modeloTabla);
-		tabla.setGridColor(Color.BLACK);
-		tabla.setShowGrid(true);
-		tabla.setCellSelectionEnabled(true);
+    private void calcularGananciasIniciales() {
+        DefaultTableModel modeloTabla = (DefaultTableModel) tablaSemanasApuntado.getModel();
 
-		// Agregar un escucha de eventos de clic para manejar la selección de celdas
-		tabla.addMouseListener(new java.awt.event.MouseAdapter() {
-			@Override
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				int row = tabla.rowAtPoint(evt.getPoint());
-				int col = tabla.columnAtPoint(evt.getPoint());
+        for (int row = 0; row < modeloTabla.getRowCount(); row++) {
+            for (int col = 1; col < modeloTabla.getColumnCount(); col++) {
+                Object cellValue = modeloTabla.getValueAt(row, col);
+                if (cellValue != null) {
+                    String profesor = obtenerProfesorDeClase(cellValue.toString());
+                    int costoClase = 10;
+                    actualizarGananciasProfesor(profesor, costoClase);
+                }
+            }
+        }
+        
+        // Añadir las claves que no estén en el mapa gananciasProfesores con valor 0.
+        Set<String> profesoresAsignados = new HashSet<>(gananciasProfesores.keySet());
+        Set<String> profesoresEsperados = new HashSet<>(Arrays.asList("Koldo", "Peio", "Kepa", "Jose", "Nerea", "Alex", "Beltran", "Maider", "Malen"));
+        profesoresEsperados.removeAll(profesoresAsignados);
+        for (String profesorFaltante : profesoresEsperados) {
+            gananciasProfesores.put(profesorFaltante, 0);
+        }
+        
+        actualizarLabelGanancias();
+    }
 
-				if (row >= 0 && col > 0) { // Evitar la primera columna (horas)
-					// Aquí puedes manejar la lógica para la celda seleccionada
-					String claseSeleccionada = (String) modeloTabla.getValueAt(row, col);
-					if (claseSeleccionada != null) {
-						mostrarDialogoApuntarse(claseSeleccionada, modeloTabla, row, col);
-					}
-				}
-			}
-		});
+    private String obtenerProfesorDeClase(String clase) {
+        // Define un mapa para asignar clases a profesores (ajusta esto según tus datos reales).
+        Map<String, String> asignacionClasesProfesores = new HashMap<>();
+        asignacionClasesProfesores.put("Yoga", "Koldo");
+        asignacionClasesProfesores.put("Yoga", "Peio");
+        asignacionClasesProfesores.put("Yoga", "Kepa");
+        asignacionClasesProfesores.put("Spinning", "Jose");
+        asignacionClasesProfesores.put("Spinning", "Nerea");
+        asignacionClasesProfesores.put("Spinning", "Alex");
+        asignacionClasesProfesores.put("Core", "Beltran"); 
+        asignacionClasesProfesores.put("Core", "Maider");
+        asignacionClasesProfesores.put("Core", "Malen");
 
-		return tabla;
-	}
+        // Busca el profesor correspondiente para la clase.
+        return asignacionClasesProfesores.get(clase);
+    }
 
-	private JTable crearTablaConBotones() {
-	    JTable tabla = new JTable();
-	    DefaultTableModel modeloTabla = new DefaultTableModel(0, 8) {
-	        @Override
-	        public boolean isCellEditable(int row, int column) {
-	            return false;
-	        }
-	    };
+    private void actualizarGananciasProfesor(String profesor, int costoClase) {
+        int gananciaProfesor = gananciasProfesores.getOrDefault(profesor, 0);
+        gananciaProfesor += costoClase;
+        gananciasProfesores.put(profesor, gananciaProfesor);
+        actualizarLabelGanancias();
+    }
 
-	    // Añadir las horas en la primera columna
-	    for (int i = 9; i <= 20; i++) {
-	        modeloTabla.addRow(new Object[]{i + ":00", null, null, null, null, null, null, null});
-	    }
+    private void actualizarLabelGanancias() {
+        StringBuilder gananciasTexto = new StringBuilder("Ganancias por Profesor:\n");
 
-	    // Añadir los días de la semana como encabezados de columna
-	    modeloTabla.setColumnIdentifiers(new Object[]{"Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"});
+        for (String profesor : gananciasProfesores.keySet()) {
+            int ganancia = gananciasProfesores.get(profesor);
+            gananciasTexto.append(profesor).append(": ").append(ganancia).append(" euros\n");
+        }
 
-	    // Añadir botones de Spinning los martes y jueves a las 7 pm
-	    agregarBoton(modeloTabla, "Martes", 10);
-	    agregarBoton(modeloTabla, "Jueves", 10);
+        JLabel gananciasLabel = new JLabel(gananciasTexto.toString());
+        frame.add(gananciasLabel, BorderLayout.SOUTH);
+        frame.revalidate();
+    }
 
-	    tabla.setModel(modeloTabla);
-	    tabla.setGridColor(Color.BLACK);
-	    tabla.setShowGrid(true);
-	    tabla.setCellSelectionEnabled(true);
+    private String[] generarClasesAleatorias(String[] tiposClase, int numClases) {
+        Random random = new Random();
+        String[] clasesAleatorias = new String[numClases];
+        for (int i = 0; i < numClases; i++) {
+            clasesAleatorias[i] = tiposClase[random.nextInt(tiposClase.length)];
+        }
+        return clasesAleatorias;
+    }
 
-	    // Agregar un escucha de eventos de clic para manejar la selección de celdas
-	    tabla.addMouseListener(new java.awt.event.MouseAdapter() {
-	        @Override
-	        public void mouseClicked(java.awt.event.MouseEvent evt) {
-	            int row = tabla.rowAtPoint(evt.getPoint());
-	            int col = tabla.columnAtPoint(evt.getPoint());
+    private void mostrarDialogoClase(String claseSeleccionada) {
+        String profesor = obtenerProfesorDeClase(claseSeleccionada);
+        String usuariosApuntados = generarNombresUsuariosAleatorios();
+        JOptionPane.showMessageDialog(frame, "Clase: " + claseSeleccionada + "\nProfesor: " + profesor + "\nUsuarios Apuntados: " + usuariosApuntados);
+    }
 
-	            if (row >= 0 && col > 0) {  // Evitar la primera columna (horas)
-	                // Aquí puedes manejar la lógica para la celda seleccionada
-	                Object contenidoCelda = modeloTabla.getValueAt(row, col);
-	                if (contenidoCelda instanceof JButton) {
-	                    ((JButton) contenidoCelda).doClick();
-	                }
-	            }
-	        }
-	    });
+    private String generarNombresUsuariosAleatorios() {
+        String[] nombres = { "Iker", "Aitor", "Ander", "Eneko", "Kerman", "Iñigo", "Javier", "Alejandro", "Beñat", "Oscar", "Xabier", "Roberto" };
+        int numUsuarios = new Random().nextInt(5) + 1;
+        StringBuilder usuarios = new StringBuilder();
+        for (int i = 0; i < numUsuarios; i++) {
+            usuarios.append(nombres[new Random().nextInt(nombres.length)]);
+            if (i < numUsuarios - 1) {
+                usuarios.append(", ");
+            }
+        }
+        return usuarios.toString();
+    }
 
-	    return tabla;
-	}
+    public void mostrarVentana() {
+        frame.setVisible(true);
+    }
 
-	// Método para agregar un botón a la tabla en la posición especificada
-	private void agregarBoton(DefaultTableModel modeloTabla, String nombreColumna, int fila) {
-	    int indiceColumna = obtenerIndiceColumna(nombreColumna, modeloTabla);
-	    if (indiceColumna != -1) {
-	        JButton boton = new JButton("Spinning");
-	        boton.addActionListener(e -> mostrarDialogoApuntarse("Spinning", modeloTabla, fila, indiceColumna));
-	        modeloTabla.setValueAt(boton, fila, indiceColumna);
-	    } else {
-	        System.err.println("La columna '" + nombreColumna + "' no se encontró.");
-	    }
-	}
-
-
-	private void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
-		// Crear un cuadro de diálogo con las opciones de reserva
-		String[] opciones = { "Sí", "No" };
-		int seleccion = JOptionPane.showOptionDialog(frame,
-				"¿Quieres apuntarte a la clase de " + claseSeleccionada + "?", "Apuntarse a Clase",
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
-
-		// Si se selecciona "Sí", añadir la clase a la lista de actividades y cambiar el
-		// texto a "Apuntado"
-		if (seleccion == JOptionPane.YES_OPTION) {
-			modeloLista.addElement(claseSeleccionada);
-
-			// Verificar si la clase seleccionada es "Spinning" y, en ese caso, agregarla a
-			// la tabla de clases apuntadas
-			if ("Spinning".equals(claseSeleccionada)) {
-				modeloTabla.setValueAt("Spinning", row, col); // Mantener el texto como "Spinning"
-				agregarClaseSpinningAClasesApuntadas(row, col);
-			} else {
-				modeloTabla.setValueAt("Apuntado", row, col);
-			}
-
-			JOptionPane.showMessageDialog(frame, "Te has apuntado a la clase de " + claseSeleccionada);
-		}
-	}
-
-	private void agregarClaseSpinningAClasesApuntadas(int row, int col) {
-		// Obtener la hora y día desde la tabla de clases disponibles
-		String hora = (String) tablaSemanasDisponibles.getValueAt(row, 0);
-		String dia = tablaSemanasDisponibles.getColumnName(col);
-
-		// Encontrar la fila correspondiente en la tabla de clases apuntadas
-		int filaApuntadas = obtenerFilaHora(hora);
-
-		// Encontrar la columna correspondiente en la tabla de clases apuntadas
-		int colApuntadas = obtenerIndiceColumna(dia, (DefaultTableModel) tablaSemanasApuntado.getModel());
-
-		// Añadir la clase "Spinning" a la tabla de clases apuntadas en la misma celda
-		tablaSemanasApuntado.setValueAt("Spinning", filaApuntadas, colApuntadas);
-	}
-
-	// Método para obtener la fila correspondiente a una hora en la tabla de clases
-	// apuntadas
-	private int obtenerFilaHora(String hora) {
-		DefaultTableModel modelo = (DefaultTableModel) tablaSemanasApuntado.getModel();
-		for (int fila = 0; fila < modelo.getRowCount(); fila++) {
-			String horaTabla = (String) modelo.getValueAt(fila, 0);
-			if (hora.equals(horaTabla)) {
-				return fila;
-			}
-		}
-		return -1; // Devolver -1 si no se encuentra la fila
-	}
-
-	// Método para obtener el índice de la columna dado el nombre
-	private int obtenerIndiceColumna(String nombreColumna, DefaultTableModel modeloTabla) {
-		for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
-			if (modeloTabla.getColumnName(i).equals(nombreColumna)) {
-				return i;
-			}
-		}
-		return -1; // Devolver -1 si no se encuentra la columna
-	}
-
-	private void mostrarDialogoReservaExitosa(String entrenamientoSeleccionado) {
-		JOptionPane.showMessageDialog(frame,
-				"Tu reserva de " + entrenamientoSeleccionado + " se ha realizado con éxito.");
-	}
-
-	public void mostrarVentana() {
-		frame.setVisible(true);
-	}
-
-	public static void main(String[] args) {
-		VentanaMonitor ventanaMonitor = new VentanaMonitor("MonitorPrueba");
-		ventanaMonitor.mostrarVentana();
-	}
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+        	VentanaAdministrador ventanaAdministrador = new VentanaAdministrador("AdministradorPrueba");
+            ventanaAdministrador.mostrarVentana();
+        });
+    }
 }
-
-

@@ -25,20 +25,16 @@ public class VentanaUsuario {
 		perfilLabel.setForeground(Color.BLACK);
 		frame.add(perfilLabel, BorderLayout.NORTH);
 
-		// Crear el panel de pestañas
 		JTabbedPane tabbedPane = new JTabbedPane();
 
-		// Pestaña de clases apuntadas
 		JPanel panelApuntado = new JPanel(new BorderLayout());
 		tablaSemanasApuntado = crearTabla();
 		panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
 
-		// Pestaña de clases disponibles
 		JPanel panelDisponibles = new JPanel(new BorderLayout());
 		tablaSemanasDisponibles = crearTablaConBotones();
 		panelDisponibles.add(new JScrollPane(tablaSemanasDisponibles), BorderLayout.CENTER);
 
-		// Agregar pestañas al panel de pestañas
 		tabbedPane.addTab("Clases Apuntadas", panelApuntado);
 		tabbedPane.addTab("Clases Disponibles", panelDisponibles);
 
@@ -71,12 +67,11 @@ public class VentanaUsuario {
 			}
 		};
 
-		// Añadir las horas en la primera columna
 		for (int i = 9; i <= 20; i++) {
 			modeloTabla.addRow(new Object[] { i + ":00", null, null, null, null, null, null, null });
 		}
 
-		// Añadir los días de la semana como encabezados de columna
+	
 		modeloTabla.setColumnIdentifiers(
 				new Object[] { "Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" });
 
@@ -85,15 +80,13 @@ public class VentanaUsuario {
 		tabla.setShowGrid(true);
 		tabla.setCellSelectionEnabled(true);
 
-		// Agregar un escucha de eventos de clic para manejar la selección de celdas
 		tabla.addMouseListener(new java.awt.event.MouseAdapter() {
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
 				int row = tabla.rowAtPoint(evt.getPoint());
 				int col = tabla.columnAtPoint(evt.getPoint());
 
-				if (row >= 0 && col > 0) { // Evitar la primera columna (horas)
-					// Aquí puedes manejar la lógica para la celda seleccionada
+				if (row >= 0 && col > 0) { 
 					String claseSeleccionada = (String) modeloTabla.getValueAt(row, col);
 					if (claseSeleccionada != null) {
 						mostrarDialogoApuntarse(claseSeleccionada, modeloTabla, row, col);
@@ -113,16 +106,13 @@ public class VentanaUsuario {
 	            return false;
 	        }
 	    };
-
-	    // Añadir las horas en la primera columna
+	    
 	    for (int i = 9; i <= 20; i++) {
 	        modeloTabla.addRow(new Object[]{i + ":00", null, null, null, null, null, null, null});
 	    }
 
-	    // Añadir los días de la semana como encabezados de columna
 	    modeloTabla.setColumnIdentifiers(new Object[]{"Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"});
 
-	    // Añadir botones de Spinning los martes y jueves a las 7 pm
 	    agregarBoton(modeloTabla, "Martes", 10);
 	    agregarBoton(modeloTabla, "Jueves", 10);
 
@@ -131,15 +121,13 @@ public class VentanaUsuario {
 	    tabla.setShowGrid(true);
 	    tabla.setCellSelectionEnabled(true);
 
-	    // Agregar un escucha de eventos de clic para manejar la selección de celdas
 	    tabla.addMouseListener(new java.awt.event.MouseAdapter() {
 	        @Override
 	        public void mouseClicked(java.awt.event.MouseEvent evt) {
 	            int row = tabla.rowAtPoint(evt.getPoint());
 	            int col = tabla.columnAtPoint(evt.getPoint());
 
-	            if (row >= 0 && col > 0) {  // Evitar la primera columna (horas)
-	                // Aquí puedes manejar la lógica para la celda seleccionada
+	            if (row >= 0 && col > 0) {  
 	                Object contenidoCelda = modeloTabla.getValueAt(row, col);
 	                if (contenidoCelda instanceof JButton) {
 	                    ((JButton) contenidoCelda).doClick();
@@ -150,8 +138,6 @@ public class VentanaUsuario {
 
 	    return tabla;
 	}
-
-	// Método para agregar un botón a la tabla en la posición especificada
 	private void agregarBoton(DefaultTableModel modeloTabla, String nombreColumna, int fila) {
 	    int indiceColumna = obtenerIndiceColumna(nombreColumna, modeloTabla);
 	    if (indiceColumna != -1) {
@@ -165,19 +151,14 @@ public class VentanaUsuario {
 
 
 	private void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
-		// Crear un cuadro de diálogo con las opciones de reserva
 		String[] opciones = { "Sí", "No" };
 		int seleccion = JOptionPane.showOptionDialog(frame,
 				"¿Quieres apuntarte a la clase de " + claseSeleccionada + "?", "Apuntarse a Clase",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
 
-		// Si se selecciona "Sí", añadir la clase a la lista de actividades y cambiar el
-		// texto a "Apuntado"
 		if (seleccion == JOptionPane.YES_OPTION) {
 			modeloLista.addElement(claseSeleccionada);
 
-			// Verificar si la clase seleccionada es "Spinning" y, en ese caso, agregarla a
-			// la tabla de clases apuntadas
 			if ("Spinning".equals(claseSeleccionada)) {
 				modeloTabla.setValueAt("Spinning", row, col); // Mantener el texto como "Spinning"
 				agregarClaseSpinningAClasesApuntadas(row, col);
@@ -190,22 +171,17 @@ public class VentanaUsuario {
 	}
 
 	private void agregarClaseSpinningAClasesApuntadas(int row, int col) {
-		// Obtener la hora y día desde la tabla de clases disponibles
+
 		String hora = (String) tablaSemanasDisponibles.getValueAt(row, 0);
 		String dia = tablaSemanasDisponibles.getColumnName(col);
 
-		// Encontrar la fila correspondiente en la tabla de clases apuntadas
 		int filaApuntadas = obtenerFilaHora(hora);
 
-		// Encontrar la columna correspondiente en la tabla de clases apuntadas
 		int colApuntadas = obtenerIndiceColumna(dia, (DefaultTableModel) tablaSemanasApuntado.getModel());
 
-		// Añadir la clase "Spinning" a la tabla de clases apuntadas en la misma celda
 		tablaSemanasApuntado.setValueAt("Spinning", filaApuntadas, colApuntadas);
 	}
 
-	// Método para obtener la fila correspondiente a una hora en la tabla de clases
-	// apuntadas
 	private int obtenerFilaHora(String hora) {
 		DefaultTableModel modelo = (DefaultTableModel) tablaSemanasApuntado.getModel();
 		for (int fila = 0; fila < modelo.getRowCount(); fila++) {
@@ -214,10 +190,9 @@ public class VentanaUsuario {
 				return fila;
 			}
 		}
-		return -1; // Devolver -1 si no se encuentra la fila
+		return -1; 
 	}
 
-	// Método para obtener el índice de la columna dado el nombre
 	private int obtenerIndiceColumna(String nombreColumna, DefaultTableModel modeloTabla) {
 		for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
 			if (modeloTabla.getColumnName(i).equals(nombreColumna)) {

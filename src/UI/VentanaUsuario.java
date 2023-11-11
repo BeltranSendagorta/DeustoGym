@@ -1,6 +1,7 @@
 package UI;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,6 +14,8 @@ public class VentanaUsuario {
 	private JTable tablaSemanasApuntado;
 	private JTable tablaSemanasDisponibles;
 
+	
+	
 	public VentanaUsuario(String nombreUsuario) {
 		frame = new JFrame("Ventana de Usuario");
 		frame.setSize(800, 600);
@@ -71,7 +74,6 @@ public class VentanaUsuario {
 			modeloTabla.addRow(new Object[] { i + ":00", null, null, null, null, null, null, null });
 		}
 
-	
 		modeloTabla.setColumnIdentifiers(
 				new Object[] { "Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" });
 
@@ -86,7 +88,7 @@ public class VentanaUsuario {
 				int row = tabla.rowAtPoint(evt.getPoint());
 				int col = tabla.columnAtPoint(evt.getPoint());
 
-				if (row >= 0 && col > 0) { 
+				if (row >= 0 && col > 0) {
 					String claseSeleccionada = (String) modeloTabla.getValueAt(row, col);
 					if (claseSeleccionada != null) {
 						mostrarDialogoApuntarse(claseSeleccionada, modeloTabla, row, col);
@@ -96,7 +98,27 @@ public class VentanaUsuario {
 		});
 
 		return tabla;
+		
 	}
+	
+	private String[][] actividadesDisponibles = {
+	        {"Spinning", "Yoga", "Boxeo", "Aeroyoga", "Pilates", "Spinning", "Boxeo"},
+	        {"Yoga", "Pilates", "HIIt", "Entrenamiento funcional", "Spinning", "Yoga", "Pilates"},
+	        {"Boxeo", "HIIt", "Entrenamiento funcional", "Spinning", "Yoga", "Boxeo", "HIIt"},
+	        {"Aeroyoga", "Entrenamiento funcional", "Spinning", "Yoga", "Boxeo", "Aeroyoga", "Entrenamiento funcional"},
+	        {"Pilates", "Spinning", "Yoga", "Boxeo", "Aeroyoga", "Pilates", "Spinning"},
+	        {"HIIt", "Boxeo", "Aeroyoga", "Pilates", "Spinning", "HIIt", "Boxeo"},
+	        {"Entrenamiento funcional", "Aeroyoga", "Pilates", "Spinning", "Yoga", "Entrenamiento funcional", "Aeroyoga"},
+	        {"Spinning", "Yoga", "Boxeo", "Aeroyoga", "Pilates", "", ""},
+	        {"Yoga", "Pilates", "HIIt", "Entrenamiento funcional", "Spinning", "", ""},
+	        {"Boxeo", "HIIt", "Entrenamiento funcional", "Spinning", "Yoga", "", ""},
+	        {"Aeroyoga", "Entrenamiento funcional", "Spinning", "Yoga", "Boxeo", "", ""},
+	        {"Pilates", "Spinning", "Yoga", "Boxeo", "Aeroyoga", "", ""}
+	};
+
+	
+	
+	
 
 	private JTable crearTablaConBotones() {
 	    JTable tabla = new JTable();
@@ -106,49 +128,36 @@ public class VentanaUsuario {
 	            return false;
 	        }
 	    };
-	    
-	    for (int i = 9; i <= 20; i++) {
-	        modeloTabla.addRow(new Object[]{i + ":00", null, null, null, null, null, null, null});
-	    }
 
 	    modeloTabla.setColumnIdentifiers(new Object[]{"Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"});
 
-	    agregarBoton(modeloTabla, "Martes", 10);
-	    agregarBoton(modeloTabla, "Jueves", 10);
+	    // Llenar la tabla con las actividades disponibles
+	    for (int i = 0; i < actividadesDisponibles.length; i++) {
+	        Object[] fila = new Object[8];
+	        fila[0] = i + 9 + ":00";
+	        System.arraycopy(actividadesDisponibles[i], 0, fila, 1, actividadesDisponibles[i].length);
+	        modeloTabla.addRow(fila);
+	    }
 
 	    tabla.setModel(modeloTabla);
 	    tabla.setGridColor(Color.BLACK);
 	    tabla.setShowGrid(true);
 	    tabla.setCellSelectionEnabled(true);
 
-	    tabla.addMouseListener(new java.awt.event.MouseAdapter() {
-	        @Override
-	        public void mouseClicked(java.awt.event.MouseEvent evt) {
-	            int row = tabla.rowAtPoint(evt.getPoint());
-	            int col = tabla.columnAtPoint(evt.getPoint());
-
-	            if (row >= 0 && col > 0) {  
-	                Object contenidoCelda = modeloTabla.getValueAt(row, col);
-	                if (contenidoCelda instanceof JButton) {
-	                    ((JButton) contenidoCelda).doClick();
-	                }
-	            }
-	        }
-	    });
-
 	    return tabla;
 	}
-	private void agregarBoton(DefaultTableModel modeloTabla, String nombreColumna, int fila) {
-	    int indiceColumna = obtenerIndiceColumna(nombreColumna, modeloTabla);
-	    if (indiceColumna != -1) {
-	        JButton boton = new JButton("Spinning");
-	        boton.addActionListener(e -> mostrarDialogoApuntarse("Spinning", modeloTabla, fila, indiceColumna));
-	        modeloTabla.setValueAt(boton, fila, indiceColumna);
-	    } else {
-	        System.err.println("La columna '" + nombreColumna + "' no se encontró.");
-	    }
-	}
 
+
+	private void agregarBoton(DefaultTableModel modeloTabla, String nombreColumna, int fila) {
+		int indiceColumna = obtenerIndiceColumna(nombreColumna, modeloTabla);
+		if (indiceColumna != -1) {
+			JButton boton = new JButton("Spinning");
+			boton.addActionListener(e -> mostrarDialogoApuntarse("Spinning", modeloTabla, fila, indiceColumna));
+			modeloTabla.setValueAt(boton, fila, indiceColumna);
+		} else {
+			System.err.println("La columna '" + nombreColumna + "' no se encontró.");
+		}
+	}
 
 	private void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
 		String[] opciones = { "Sí", "No" };
@@ -190,7 +199,7 @@ public class VentanaUsuario {
 				return fila;
 			}
 		}
-		return -1; 
+		return -1;
 	}
 
 	private int obtenerIndiceColumna(String nombreColumna, DefaultTableModel modeloTabla) {

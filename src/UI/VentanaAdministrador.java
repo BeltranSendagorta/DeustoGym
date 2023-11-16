@@ -25,13 +25,15 @@ public class VentanaAdministrador {
         perfilLabel.setForeground(Color.BLACK);
         frame.add(perfilLabel, BorderLayout.NORTH);
 
-        JTabbedPane tabbedPane = new JTabbedPane();
         JPanel panelApuntado = new JPanel(new BorderLayout());
-        // Mueve la inicialización de tablaSemanasApuntado aquí
         tablaSemanasApuntado = crearTabla();
         panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
-        tabbedPane.addTab("Clases Disponibles", panelApuntado);
-        frame.add(tabbedPane, BorderLayout.CENTER);
+        frame.add(panelApuntado, BorderLayout.CENTER);
+
+      
+        JTextArea gananciasTextArea = new JTextArea();
+        gananciasTextArea.setEditable(false);
+        frame.add(new JScrollPane(gananciasTextArea), BorderLayout.SOUTH);
 
         modeloLista = new DefaultListModel<>();
         JList<String> listaActividades = new JList<>(modeloLista);
@@ -85,13 +87,12 @@ public class VentanaAdministrador {
         tabla.setShowGrid(true);
         tabla.setCellSelectionEnabled(true);
 
-        // Crea el renderer personalizado
         DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-                // Comprueba el valor en la celda y configura el color de fondo según el tipo de clase
+            
                 if ("Yoga".equals(value)) {
                     c.setBackground(Color.PINK);
                 } else if ("Spinning".equals(value)) {
@@ -99,7 +100,7 @@ public class VentanaAdministrador {
                 } else if ("Core".equals(value)) {
                     c.setBackground(Color.YELLOW);
                 } else {
-                    // Restablece el color de fondo predeterminado
+            
                     c.setBackground(table.getBackground());
                 }
 
@@ -107,13 +108,14 @@ public class VentanaAdministrador {
             }
         };
 
-        // Aplica el renderer personalizado a todas las columnas de días
+   
         for (int i = 1; i < modeloTabla.getColumnCount(); i++) {
             tabla.getColumnModel().getColumn(i).setCellRenderer(renderer);
         }
 
         return tabla;
     }
+
     private void calcularGananciasIniciales() {
         DefaultTableModel modeloTabla = (DefaultTableModel) tablaSemanasApuntado.getModel();
 
@@ -127,7 +129,7 @@ public class VentanaAdministrador {
                 }
             }
         }
-        
+
         // Añadir las claves que no estén en el mapa gananciasProfesores con valor 0.
         Set<String> profesoresAsignados = new HashSet<>(gananciasProfesores.keySet());
         Set<String> profesoresEsperados = new HashSet<>(Arrays.asList("Koldo", "Peio", "Kepa", "Jose", "Nerea", "Alex", "Beltran", "Maider", "Malen"));
@@ -135,12 +137,12 @@ public class VentanaAdministrador {
         for (String profesorFaltante : profesoresEsperados) {
             gananciasProfesores.put(profesorFaltante, 0);
         }
-        
+
         actualizarLabelGanancias();
     }
 
     private String obtenerProfesorDeClase(String clase) {
-        // Define un mapa para asignar clases a profesores (ajusta esto según tus datos reales).
+     
         Map<String, String> asignacionClasesProfesores = new HashMap<>();
         asignacionClasesProfesores.put("Yoga", "Koldo");
         asignacionClasesProfesores.put("Yoga", "Peio");
@@ -148,11 +150,11 @@ public class VentanaAdministrador {
         asignacionClasesProfesores.put("Spinning", "Jose");
         asignacionClasesProfesores.put("Spinning", "Nerea");
         asignacionClasesProfesores.put("Spinning", "Alex");
-        asignacionClasesProfesores.put("Core", "Beltran"); 
+        asignacionClasesProfesores.put("Core", "Beltran");
         asignacionClasesProfesores.put("Core", "Maider");
         asignacionClasesProfesores.put("Core", "Malen");
 
-        // Busca el profesor correspondiente para la clase.
+    
         return asignacionClasesProfesores.get(clase);
     }
 
@@ -171,8 +173,9 @@ public class VentanaAdministrador {
             gananciasTexto.append(profesor).append(": ").append(ganancia).append(" euros\n");
         }
 
-        JLabel gananciasLabel = new JLabel(gananciasTexto.toString());
-        frame.add(gananciasLabel, BorderLayout.SOUTH);
+        JTextArea gananciasTextArea = new JTextArea(gananciasTexto.toString());
+        gananciasTextArea.setEditable(false);
+        frame.add(new JScrollPane(gananciasTextArea), BorderLayout.SOUTH);
         frame.revalidate();
     }
 
@@ -210,7 +213,7 @@ public class VentanaAdministrador {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-        	VentanaAdministrador ventanaAdministrador = new VentanaAdministrador("AdministradorPrueba");
+            VentanaAdministrador ventanaAdministrador = new VentanaAdministrador("AdministradorPrueba");
             ventanaAdministrador.mostrarVentana();
         });
     }

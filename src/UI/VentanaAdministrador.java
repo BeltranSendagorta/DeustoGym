@@ -1,6 +1,7 @@
 package UI;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -26,6 +27,7 @@ public class VentanaAdministrador {
 
         JTabbedPane tabbedPane = new JTabbedPane();
         JPanel panelApuntado = new JPanel(new BorderLayout());
+        // Mueve la inicialización de tablaSemanasApuntado aquí
         tablaSemanasApuntado = crearTabla();
         panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
         tabbedPane.addTab("Clases Disponibles", panelApuntado);
@@ -69,23 +71,49 @@ public class VentanaAdministrador {
         };
 
         Random random = new Random();
-        String[] tiposClase = { "Yoga", "Spinning", "Core" };
+        String[] tiposClase = {"Yoga", "Spinning", "Core"};
         for (int i = 9; i <= 20; i++) {
             String hora = i + ":00";
             String[] clasesAleatorias = generarClasesAleatorias(tiposClase, 7);
-            modeloTabla.addRow(new Object[] { hora, clasesAleatorias[0], clasesAleatorias[1], clasesAleatorias[2], clasesAleatorias[3], clasesAleatorias[4], clasesAleatorias[5], clasesAleatorias[6] });
+            modeloTabla.addRow(new Object[]{hora, clasesAleatorias[0], clasesAleatorias[1], clasesAleatorias[2], clasesAleatorias[3], clasesAleatorias[4], clasesAleatorias[5], clasesAleatorias[6]});
         }
 
-        modeloTabla.setColumnIdentifiers(new Object[] { "Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" });
+        modeloTabla.setColumnIdentifiers(new Object[]{"Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"});
 
         tabla.setModel(modeloTabla);
         tabla.setGridColor(Color.BLACK);
         tabla.setShowGrid(true);
         tabla.setCellSelectionEnabled(true);
 
+        // Crea el renderer personalizado
+        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+                // Comprueba el valor en la celda y configura el color de fondo según el tipo de clase
+                if ("Yoga".equals(value)) {
+                    c.setBackground(Color.PINK);
+                } else if ("Spinning".equals(value)) {
+                    c.setBackground(Color.GREEN);
+                } else if ("Core".equals(value)) {
+                    c.setBackground(Color.YELLOW);
+                } else {
+                    // Restablece el color de fondo predeterminado
+                    c.setBackground(table.getBackground());
+                }
+
+                return c;
+            }
+        };
+
+        // Aplica el renderer personalizado a todas las columnas de días
+        for (int i = 1; i < modeloTabla.getColumnCount(); i++) {
+            tabla.getColumnModel().getColumn(i).setCellRenderer(renderer);
+        }
+
         return tabla;
     }
-
     private void calcularGananciasIniciales() {
         DefaultTableModel modeloTabla = (DefaultTableModel) tablaSemanasApuntado.getModel();
 

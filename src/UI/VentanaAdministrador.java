@@ -5,6 +5,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 public class VentanaAdministrador {
@@ -72,12 +75,22 @@ public class VentanaAdministrador {
             }
         };
 
-        Random random = new Random();
-        String[] tiposClase = {"Yoga", "Spinning", "Core"};
-        for (int i = 9; i <= 20; i++) {
-            String hora = i + ":00";
-            String[] clasesAleatorias = generarClasesAleatorias(tiposClase, 7);
-            modeloTabla.addRow(new Object[]{hora, clasesAleatorias[0], clasesAleatorias[1], clasesAleatorias[2], clasesAleatorias[3], clasesAleatorias[4], clasesAleatorias[5], clasesAleatorias[6]});
+        try (BufferedReader br = new BufferedReader(new FileReader("Horario2023.csv"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                StringTokenizer tokenizer = new StringTokenizer(line, ",");
+                String hora = tokenizer.nextToken();
+                String[] clases = new String[7];
+
+                // Verificar si hay suficientes tokens antes de acceder a ellos
+                for (int i = 0; i < clases.length && tokenizer.hasMoreTokens(); i++) {
+                    clases[i] = tokenizer.nextToken();
+                }
+
+                modeloTabla.addRow(new Object[]{hora, clases[0], clases[1], clases[2], clases[3], clases[4], clases[5], clases[6]});
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         modeloTabla.setColumnIdentifiers(new Object[]{"Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"});
@@ -92,23 +105,42 @@ public class VentanaAdministrador {
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-            
-                if ("Yoga".equals(value)) {
-                    c.setBackground(Color.PINK);
-                } else if ("Spinning".equals(value)) {
-                    c.setBackground(Color.GREEN);
-                } else if ("Core".equals(value)) {
-                    c.setBackground(Color.YELLOW);
-                } else {
-            
-                    c.setBackground(table.getBackground());
+                String actividad = (value != null) ? value.toString() : "";
+
+                // Asignar colores según la actividad
+                switch (actividad) {
+                    case "Yoga":
+                        c.setBackground(Color.PINK);
+                        break;
+                    case "Spinning":
+                        c.setBackground(Color.GREEN);
+                        break;
+                    case "Core":
+                        c.setBackground(Color.YELLOW);
+                        break;
+                    case "Boxeo":
+                    	 c.setBackground(new Color(128, 191, 255));
+                        break;
+                    case "Aeroyoga":
+                        c.setBackground(Color.YELLOW);
+                        break;
+                    case "Pilates":
+                        c.setBackground(Color.RED);
+                        break;
+                    case "HIIt":
+                        c.setBackground(Color.GRAY);
+                        break;
+                    case "Funcional":
+                        c.setBackground(new Color(139, 69, 19));  // Marrón
+                        break;
+                    default:
+                        c.setBackground(table.getBackground());
                 }
 
                 return c;
             }
         };
 
-   
         for (int i = 1; i < modeloTabla.getColumnCount(); i++) {
             tabla.getColumnModel().getColumn(i).setCellRenderer(renderer);
         }

@@ -14,7 +14,7 @@ public class VentanaAdministrador {
     private JFrame frame;
     private DefaultListModel<String> modeloLista;
     private JTable tablaSemanasApuntado;
-    private Map<String, Integer> gananciasProfesores;
+    public Map<String, Integer> gananciasProfesores;
 
     public VentanaAdministrador(String nombreAdministrador) {
         frame = new JFrame("Ventana de Administrador");
@@ -148,7 +148,7 @@ public class VentanaAdministrador {
         return tabla;
     }
 
-    private void calcularGananciasIniciales() {
+    public void calcularGananciasIniciales() {
         DefaultTableModel modeloTabla = (DefaultTableModel) tablaSemanasApuntado.getModel();
 
         for (int row = 0; row < modeloTabla.getRowCount(); row++) {
@@ -173,7 +173,7 @@ public class VentanaAdministrador {
         actualizarLabelGanancias();
     }
 
-    private String obtenerProfesorDeClase(String clase) {
+    public String obtenerProfesorDeClase(String clase) {
      
         Map<String, String> asignacionClasesProfesores = new HashMap<>();
         asignacionClasesProfesores.put("Yoga", "Koldo");
@@ -190,14 +190,14 @@ public class VentanaAdministrador {
         return asignacionClasesProfesores.get(clase);
     }
 
-    private void actualizarGananciasProfesor(String profesor, int costoClase) {
+    public void actualizarGananciasProfesor(String profesor, int costoClase) {
         int gananciaProfesor = gananciasProfesores.getOrDefault(profesor, 0);
         gananciaProfesor += costoClase;
         gananciasProfesores.put(profesor, gananciaProfesor);
         actualizarLabelGanancias();
     }
 
-    private void actualizarLabelGanancias() {
+    public void actualizarLabelGanancias() {
         StringBuilder gananciasTexto = new StringBuilder("Ganancias por Profesor:\n");
 
         for (String profesor : gananciasProfesores.keySet()) {
@@ -211,7 +211,7 @@ public class VentanaAdministrador {
         frame.revalidate();
     }
 
-    private String[] generarClasesAleatorias(String[] tiposClase, int numClases) {
+    public String[] generarClasesAleatorias(String[] tiposClase, int numClases) {
         Random random = new Random();
         String[] clasesAleatorias = new String[numClases];
         for (int i = 0; i < numClases; i++) {
@@ -220,13 +220,13 @@ public class VentanaAdministrador {
         return clasesAleatorias;
     }
 
-    private void mostrarDialogoClase(String claseSeleccionada) {
+    public void mostrarDialogoClase(String claseSeleccionada) {
         String profesor = obtenerProfesorDeClase(claseSeleccionada);
         String usuariosApuntados = generarNombresUsuariosAleatorios();
         JOptionPane.showMessageDialog(frame, "Clase: " + claseSeleccionada + "\nProfesor: " + profesor + "\nUsuarios Apuntados: " + usuariosApuntados);
     }
 
-    private String generarNombresUsuariosAleatorios() {
+    public String generarNombresUsuariosAleatorios() {
         String[] nombres = { "Iker", "Aitor", "Ander", "Eneko", "Kerman", "Iñigo", "Javier", "Alejandro", "Beñat", "Oscar", "Xabier", "Roberto" };
         int numUsuarios = new Random().nextInt(5) + 1;
         StringBuilder usuarios = new StringBuilder();

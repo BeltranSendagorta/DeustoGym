@@ -36,6 +36,7 @@ public class VentanaUsuario {
 			{ "Pilates", "Spinning", "Yoga", "Boxeo", "Aeroyoga", "", "" } };
 
 	public VentanaUsuario(String nombreUsuario) {
+		
 		frame = new JFrame("Ventana de Usuario");
 		frame.setSize(800, 600);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -182,8 +183,8 @@ public class VentanaUsuario {
 	            switch (actividad) {
 	                case "Yoga":
 	                    c.setBackground(Color.PINK);
-	                    icono = new ImageIcon("img/yoga.png");
 	                    break;
+	                
 	                case "Spinning":
 	                    c.setBackground(Color.GREEN);
 	                    break;
@@ -195,7 +196,12 @@ public class VentanaUsuario {
 	                    break;
 	                case "Aeroyoga":
 	                    c.setBackground(Color.YELLOW);
-	                    break;
+	                    icono = new ImageIcon("img/aeroyoga.png");
+	                    JLabel l = new JLabel();
+	                    l.setHorizontalAlignment(JLabel.CENTER);
+	                    l.setIcon(icono);
+	                    return l;
+	                    
 	                case "Pilates":
 	                    c.setBackground(Color.RED);
 	                    break;

@@ -250,6 +250,9 @@ public class VentanaUsuario {
 	private void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
 	    String hora = (String) modeloTabla.getValueAt(row, 0);
 	    String dia = modeloTabla.getColumnName(col);
+	    
+	    String rutaIcono = "ruta/de/tu/carpeta/img/logo.ico";
+	    ImageIcon icono = new ImageIcon(rutaIcono);
 
 	    if (modeloTabla == tablaSemanasApuntado.getModel()) {
 	        mostrarDialogoDesapuntarse(claseSeleccionada, modeloTabla, row, col);

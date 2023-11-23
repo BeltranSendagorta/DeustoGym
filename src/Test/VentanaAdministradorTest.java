@@ -7,36 +7,36 @@ import java.util.Arrays;
 import javax.swing.SwingUtilities;
 
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import UI.VentanaAdministrador;
 
 public class VentanaAdministradorTest {
 
-	private VentanaAdministrador ventana;
+    private static VentanaAdministrador ventana;
 
-    @Before
-    void setUp() {
+    @BeforeClass
+    public static void setUp() {
         SwingUtilities.invokeLater(() -> {
             ventana = new VentanaAdministrador("TestAdmin");
             ventana.mostrarVentana();
         });
     }
 
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+    }
 
-	@Test
-    void testObtenerProfesorDeClase() {
+    @Test
+    public void testObtenerProfesorDeClase() {
         assertEquals("Koldo", ventana.obtenerProfesorDeClase("Yoga"));
         assertEquals("Jose", ventana.obtenerProfesorDeClase("Spinning"));
         assertEquals("Beltran", ventana.obtenerProfesorDeClase("Core"));
         assertNull(ventana.obtenerProfesorDeClase("ClaseInvalida"));
     }
-	
-	@Test
+
+    @Test
     public void testActualizarGananciasProfesor() {
         ventana.actualizarGananciasProfesor("Koldo", 20);
         assertEquals(20, ventana.gananciasProfesores.get("Koldo").intValue());
@@ -72,13 +72,10 @@ public class VentanaAdministradorTest {
             assertEquals(0, ventana.gananciasProfesores.get(profesor).intValue());
         }
     }
-    
+
     @Test
     public void testGenerarNombresUsuariosAleatorios() {
         String nombres = ventana.generarNombresUsuariosAleatorios();
         assertNotNull(nombres);
     }
-    
-
-
 }

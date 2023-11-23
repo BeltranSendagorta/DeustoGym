@@ -269,6 +269,10 @@ public class VentanaUsuario {
 
 	private void mostrarDialogoDesapuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
 		String[] opciones = { "Sí", "No" };
+		
+		String rutaIcono = "ruta/de/tu/carpeta/img/logo.ico";
+	    ImageIcon icono = new ImageIcon(rutaIcono);
+	
 		int seleccion = JOptionPane.showOptionDialog(frame,
 				"¿Quieres desapuntarte de la clase de " + claseSeleccionada + "?", "Desapuntarse de Clase",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);

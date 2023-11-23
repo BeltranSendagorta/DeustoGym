@@ -11,6 +11,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import java.net.URL;
+
 public class VentanaUsuario {
 	private JFrame frame;
 	private DefaultListModel<String> modeloLista;
@@ -90,7 +92,6 @@ public class VentanaUsuario {
 
 		modeloTabla.setColumnIdentifiers(
 				new Object[] { "Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" });
-		
 
 		for (int i = 9; i <= 20; i++) {
 			modeloTabla.addRow(new Object[] { i + ":00", null, null, null, null, null, null, null });
@@ -99,7 +100,6 @@ public class VentanaUsuario {
 		tabla.setModel(modeloTabla);
 
 		tabla.getTableHeader().setReorderingAllowed(false);
-		
 
 		tabla.setGridColor(Color.BLACK);
 		tabla.setShowGrid(true);
@@ -128,108 +128,116 @@ public class VentanaUsuario {
 	}
 
 	private JTable crearTablaClasesDisponibles() {
-		JTable tabla = new JTable();
-		DefaultTableModel modeloTabla = new DefaultTableModel(0, 7) {
-			@Override
-			public boolean isCellEditable(int row, int column) {
-				// Solo permite la edición de celdas que no están en la primera fila
-				return row > 0;
-			}
-		};
+	    JTable tabla = new JTable();
+	    DefaultTableModel modeloTabla = new DefaultTableModel(0, 7) {
+	        @Override
+	        public boolean isCellEditable(int row, int column) {
+	            // Solo permite la edición de celdas que no están en la primera fila
+	            return row > 0;
+	        }
+	    };
 
-		modeloTabla.setColumnIdentifiers(
-				new Object[] { "Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" });
+	    modeloTabla.setColumnIdentifiers(
+	            new Object[]{"Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"});
 
-		try (BufferedReader br = new BufferedReader(new FileReader("Horario2023.csv"))) {
-			String line;
-			while ((line = br.readLine()) != null) {
-				StringTokenizer tokenizer = new StringTokenizer(line, ",");
-				String hora = tokenizer.nextToken();
-				String[] clases = new String[7];
+	    try (BufferedReader br = new BufferedReader(new FileReader("Horario2023.csv"))) {
+	        String line;
+	        while ((line = br.readLine()) != null) {
+	            StringTokenizer tokenizer = new StringTokenizer(line, ",");
+	            String hora = tokenizer.nextToken();
+	            String[] clases = new String[7];
 
-				for (int i = 0; i < clases.length && tokenizer.hasMoreTokens(); i++) {
-					clases[i] = tokenizer.nextToken();
-				}
+	            for (int i = 0; i < clases.length && tokenizer.hasMoreTokens(); i++) {
+	                clases[i] = tokenizer.nextToken();
+	            }
 
-				modeloTabla.addRow(new Object[] { hora, clases[0], clases[1], clases[2], clases[3], clases[4],
-						clases[5], clases[6] });
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	            modeloTabla.addRow(new Object[]{hora, clases[0], clases[1], clases[2], clases[3], clases[4],
+	                    clases[5], clases[6]});
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 
-		tabla.setModel(modeloTabla);
+	    tabla.setModel(modeloTabla);
 
-		tabla.getTableHeader().setReorderingAllowed(false);
-		tabla.setTableHeader(null);
+	    tabla.getTableHeader().setReorderingAllowed(false);
+	    tabla.setTableHeader(null);
 
-		tabla.setGridColor(Color.BLACK);
-		tabla.setShowGrid(true);
-		tabla.setCellSelectionEnabled(true);
+	    tabla.setGridColor(Color.BLACK);
+	    tabla.setShowGrid(true);
+	    tabla.setCellSelectionEnabled(true);
 
-		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-			@Override
-			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-					boolean hasFocus, int row, int column) {
-				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+	    DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+	        private final JLabel label = new JLabel();
 
-				String actividad = (value != null) ? value.toString() : "";
+	        @Override
+	        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+	                                                       boolean hasFocus, int row, int column) {
+	            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-				// Asignar colores según la actividad
-				switch (actividad) {
-				case "Yoga":
-					c.setBackground(Color.PINK);
-					break;
-				case "Spinning":
-					c.setBackground(Color.GREEN);
-					break;
-				case "Core":
-					c.setBackground(Color.YELLOW);
-					break;
-				case "Boxeo":
-					c.setBackground(new Color(128, 191, 255));
-					break;
-				case "Aeroyoga":
-					c.setBackground(Color.YELLOW);
-					break;
-				case "Pilates":
-					c.setBackground(Color.RED);
-					break;
-				case "HIIt":
-					c.setBackground(Color.GRAY);
-					break;
-				case "Funcional":
-					c.setBackground(new Color(139, 69, 19)); // Marrón
-					break;
-				default:
-					c.setBackground(table.getBackground());
-				}
+	            String actividad = (value != null) ? value.toString() : "";
+	            ImageIcon icono = null;
 
+	            // Asignar colores según la actividad
+	            switch (actividad) {
+	                case "Yoga":
+	                    c.setBackground(Color.PINK);
+	                    icono = new ImageIcon("img/yoga.png");
+	                    break;
+	                case "Spinning":
+	                    c.setBackground(Color.GREEN);
+	                    break;
+	                case "Core":
+	                    c.setBackground(Color.YELLOW);
+	                    break;
+	                case "Boxeo":
+	                    c.setBackground(new Color(128, 191, 255));
+	                    break;
+	                case "Aeroyoga":
+	                    c.setBackground(Color.YELLOW);
+	                    break;
+	                case "Pilates":
+	                    c.setBackground(Color.RED);
+	                    break;
+	                case "HIIt":
+	                    c.setBackground(Color.GRAY);
+	                    break;
+	                case "Funcional":
+	                    c.setBackground(new Color(139, 69, 19)); // Marrón
+	                    break;
+	                default:
+	                    c.setBackground(table.getBackground());
+	            }
 				return c;
-			}
-		};
 
-		for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
-			tabla.getColumnModel().getColumn(i).setCellRenderer(renderer);
+	           
+	    }
+	};
+
+	    for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
+	        tabla.getColumnModel().getColumn(i).setCellRenderer(renderer);
+	    }
+
+	    tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+
+	@Override
+	public void mouseClicked(java.awt.event.MouseEvent evt) {
+		int row = tabla.rowAtPoint(evt.getPoint());
+		int col = tabla.columnAtPoint(evt.getPoint());
+
+		if (row > 0 && col > 0) {
+			String claseSeleccionada = (String) modeloTabla.getValueAt(row, col);
+			if (claseSeleccionada != null) {
+				mostrarDialogoApuntarse(claseSeleccionada, modeloTabla, row, col);
+			}
 		}
-
-		tabla.addMouseListener(new java.awt.event.MouseAdapter() {
-			@Override
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				int row = tabla.rowAtPoint(evt.getPoint());
-				int col = tabla.columnAtPoint(evt.getPoint());
-
-				if (row > 0 && col > 0) {
-					String claseSeleccionada = (String) modeloTabla.getValueAt(row, col);
-					if (claseSeleccionada != null) {
-						mostrarDialogoApuntarse(claseSeleccionada, modeloTabla, row, col);
-					}
-				}
-			}
-		});
-
-		return tabla;
 	}
+
+	});
+
+	return tabla;
+	}
+
 
 	private void agregarClaseAClasesApuntadas(String claseSeleccionada, int row, int col) {
 		String hora = (String) tablaSemanasDisponibles.getValueAt(row, 0);
@@ -248,34 +256,33 @@ public class VentanaUsuario {
 	}
 
 	private void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
-	    String hora = (String) modeloTabla.getValueAt(row, 0);
-	    String dia = modeloTabla.getColumnName(col);
-	    
-	    String rutaIcono = "ruta/de/tu/carpeta/img/logo.ico";
-	    ImageIcon icono = new ImageIcon(rutaIcono);
+		String hora = (String) modeloTabla.getValueAt(row, 0);
+		String dia = modeloTabla.getColumnName(col);
 
-	    if (modeloTabla == tablaSemanasApuntado.getModel()) {
-	        mostrarDialogoDesapuntarse(claseSeleccionada, modeloTabla, row, col);
-	    } else {
-	        String[] opciones = { "Sí", "No" };
-	        int seleccion = JOptionPane.showOptionDialog(frame,
-	                "¿Quieres apuntarte a la clase de " + claseSeleccionada + "?", "Apuntarse a Clase",
-	                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+		String rutaIcono = "ruta/de/tu/carpeta/img/logo.ico";
+		ImageIcon icono = new ImageIcon(rutaIcono);
 
-	        if (seleccion == JOptionPane.YES_OPTION) {
-	            agregarClaseAClasesApuntadas(claseSeleccionada, row, col);
-	            JOptionPane.showMessageDialog(frame, "Te has apuntado a la clase de " + claseSeleccionada);
-	        }
-	    }
+		if (modeloTabla == tablaSemanasApuntado.getModel()) {
+			mostrarDialogoDesapuntarse(claseSeleccionada, modeloTabla, row, col);
+		} else {
+			String[] opciones = { "Sí", "No" };
+			int seleccion = JOptionPane.showOptionDialog(frame,
+					"¿Quieres apuntarte a la clase de " + claseSeleccionada + "?", "Apuntarse a Clase",
+					JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+
+			if (seleccion == JOptionPane.YES_OPTION) {
+				agregarClaseAClasesApuntadas(claseSeleccionada, row, col);
+				JOptionPane.showMessageDialog(frame, "Te has apuntado a la clase de " + claseSeleccionada);
+			}
+		}
 	}
-
 
 	private void mostrarDialogoDesapuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
 		String[] opciones = { "Sí", "No" };
-		
+
 		String rutaIcono = "ruta/de/tu/carpeta/img/logo.ico";
-	    ImageIcon icono = new ImageIcon(rutaIcono);
-	
+		ImageIcon icono = new ImageIcon(rutaIcono);
+
 		int seleccion = JOptionPane.showOptionDialog(frame,
 				"¿Quieres desapuntarte de la clase de " + claseSeleccionada + "?", "Desapuntarse de Clase",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);

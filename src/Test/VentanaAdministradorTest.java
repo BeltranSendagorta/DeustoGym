@@ -6,8 +6,8 @@ import java.util.Arrays;
 
 import javax.swing.SwingUtilities;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import UI.VentanaAdministrador;
@@ -16,16 +16,18 @@ public class VentanaAdministradorTest {
 
     private static VentanaAdministrador ventana;
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() throws Exception {
         SwingUtilities.invokeLater(() -> {
             ventana = new VentanaAdministrador("TestAdmin");
             ventana.mostrarVentana();
         });
+        Thread.sleep(1000);
     }
 
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+    @After
+    public void tearDown() throws Exception {
+        ventana = null;
     }
 
     @Test

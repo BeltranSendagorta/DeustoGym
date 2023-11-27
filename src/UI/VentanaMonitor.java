@@ -184,7 +184,8 @@ public class VentanaMonitor {
 
 				String actividad = (value != null) ? value.toString() : "";
 
-				 // Asignar colores según la actividad
+				 ImageIcon icono;
+				// Asignar colores según la actividad
 	            switch (actividad) {
 	                case "Yoga":
 	                    c.setBackground(Color.PINK);

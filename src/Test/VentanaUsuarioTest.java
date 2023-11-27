@@ -32,7 +32,7 @@ public class VentanaUsuarioTest {
 	public void testCrearTablaClasesApuntadas() {
 		JTable tablaClasesApuntadas = ventanaUsuario.crearTablaClasesApuntadas();
 		Assert.assertNotNull(tablaClasesApuntadas);
-		Assert.assertEquals(8, tablaClasesApuntadas.getColumnCount()); // Update to the actual number of columns
+		Assert.assertEquals(8, tablaClasesApuntadas.getColumnCount()); 
 		Assert.assertEquals(12, tablaClasesApuntadas.getRowCount());
 	}
 

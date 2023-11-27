@@ -15,6 +15,8 @@ public class VentanaAdministrador {
     private DefaultListModel<String> modeloLista;
     private JTable tablaSemanasApuntado;
     public Map<String, Integer> gananciasProfesores;
+    
+    
 
     public VentanaAdministrador(String nombreAdministrador) {
         frame = new JFrame("Ventana de Administrador");
@@ -106,7 +108,8 @@ public class VentanaAdministrador {
 
                 String actividad = (value != null) ? value.toString() : "";
 
-                 // Asignar colores según la actividad
+                 ImageIcon icono;
+				// Asignar colores según la actividad
 	            switch (actividad) {
 	                case "Yoga":
 	                    c.setBackground(Color.PINK);

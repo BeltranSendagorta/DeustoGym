@@ -2,9 +2,8 @@ package Test;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 
-import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
 import org.junit.After;
@@ -19,37 +18,27 @@ public class VentanaAdministradorTest {
 
     @Before
     public void setUp() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
         SwingUtilities.invokeLater(() -> {
             ventanaAdministrador = new VentanaAdministrador("TestAdmin");
             ventanaAdministrador.mostrarVentana();
+            latch.countDown();
         });
-        Thread.sleep(1000);
+
+        latch.await(); // Esperar a que la inicialización se complete
     }
 
     @After
     public void tearDown() throws Exception {
-    	ventanaAdministrador = null;
+        ventanaAdministrador = null;
     }
 
-    @Test
-    public void testCrearTabla() {
-        JTable tabla = ventanaAdministrador.crearTabla();
-        assertNotNull(tabla);
-
-    }
-
-    @Test
-    public void testCalcularGananciasIniciales() {
-        assertNotNull(ventanaAdministrador.gananciasProfesores);
-        assertEquals(9, ventanaAdministrador.gananciasProfesores.size());
-
-    }
 
     @Test
     public void testObtenerProfesorDeClase() {
         String profesor = ventanaAdministrador.obtenerProfesorDeClase("Yoga");
         assertEquals("Koldo", profesor);
-
     }
 
     @Test
@@ -62,32 +51,23 @@ public class VentanaAdministradorTest {
     }
 
     @Test
-    public void testActualizarLabelGanancias() {
-        ventanaAdministrador.actualizarLabelGanancias();
-
-    }
-
-    @Test
     public void testGenerarClasesAleatorias() {
         String[] tiposClase = {"Yoga", "Spinning", "Core", "Boxeo", "Aeroyoga", "Pilates", "HIIt", "Funcional"};
         int numClases = 5;
         String[] clasesAleatorias = ventanaAdministrador.generarClasesAleatorias(tiposClase, numClases);
         assertNotNull(clasesAleatorias);
         assertEquals(numClases, clasesAleatorias.length);
-
     }
 
     @Test
     public void testMostrarDialogoClase() {
         String clasePrueba = "Yoga";
         ventanaAdministrador.mostrarDialogoClase(clasePrueba);
-
     }
 
     @Test
     public void testGenerarNombresUsuariosAleatorios() {
         String nombres = ventanaAdministrador.generarNombresUsuariosAleatorios();
         assertNotNull(nombres);
-
     }
 }

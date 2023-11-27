@@ -189,7 +189,7 @@ public class VentanaUsuario {
 	            switch (actividad) {
 	                case "Yoga":
 	                    c.setBackground(Color.PINK);
-	                    icono = new ImageIcon("img/aeroyoga.png");
+	                    icono = new ImageIcon("img/yoga.png");
 	                    JLabel a = new JLabel();
 	                    a.setHorizontalAlignment(JLabel.CENTER);
 	                    a.setIcon(icono);
@@ -197,7 +197,7 @@ public class VentanaUsuario {
 	                
 	                case "Spinning":
 	                    c.setBackground(Color.GREEN);
-	                    icono = new ImageIcon("img/aeroyoga.png");
+	                    icono = new ImageIcon("img/spinning.png");
 	                    JLabel b = new JLabel();
 	                    b.setHorizontalAlignment(JLabel.CENTER);
 	                    b.setIcon(icono);
@@ -205,7 +205,7 @@ public class VentanaUsuario {
 
 	                case "Core":
 	                    c.setBackground(Color.YELLOW);
-	                    icono = new ImageIcon("img/aeroyoga.png");
+	                    icono = new ImageIcon("img/core.png");
 	                    JLabel d = new JLabel();
 	                    d.setHorizontalAlignment(JLabel.CENTER);
 	                    d.setIcon(icono);
@@ -213,7 +213,7 @@ public class VentanaUsuario {
 
 	                case "Boxeo":
 	                    c.setBackground(new Color(128, 191, 255));
-	                    icono = new ImageIcon("img/aeroyoga.png");
+	                    icono = new ImageIcon("img/boxeo.png");
 	                    JLabel e = new JLabel();
 	                    e.setHorizontalAlignment(JLabel.CENTER);
 	                    e.setIcon(icono);
@@ -229,7 +229,7 @@ public class VentanaUsuario {
 	                    
 	                case "Pilates":
 	                    c.setBackground(Color.RED);
-	                    icono = new ImageIcon("img/aeroyoga.png");
+	                    icono = new ImageIcon("img/pilates.png");
 	                    JLabel g = new JLabel();
 	                    g.setHorizontalAlignment(JLabel.CENTER);
 	                    g.setIcon(icono);
@@ -237,7 +237,7 @@ public class VentanaUsuario {
 
 	                case "HIIt":
 	                    c.setBackground(Color.GRAY);
-	                    icono = new ImageIcon("img/aeroyoga.png");
+	                    icono = new ImageIcon("img/hiit.png");
 	                    JLabel h = new JLabel();
 	                    h.setHorizontalAlignment(JLabel.CENTER);
 	                    h.setIcon(icono);
@@ -245,7 +245,7 @@ public class VentanaUsuario {
 
 	                case "Funcional":
 	                    c.setBackground(new Color(139, 69, 19)); // Marrón
-	                    icono = new ImageIcon("img/aeroyoga.png");
+	                    icono = new ImageIcon("img/funcional.png");
 	                    JLabel i = new JLabel();
 	                    i.setHorizontalAlignment(JLabel.CENTER);
 	                    i.setIcon(icono);

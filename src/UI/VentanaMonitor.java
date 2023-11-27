@@ -184,34 +184,74 @@ public class VentanaMonitor {
 
 				String actividad = (value != null) ? value.toString() : "";
 
-				// Asignar colores según la actividad
-				switch (actividad) {
-				case "Yoga":
-					c.setBackground(Color.PINK);
-					break;
-				case "Spinning":
-					c.setBackground(Color.GREEN);
-					break;
-				case "Core":
-					c.setBackground(Color.YELLOW);
-					break;
-				case "Boxeo":
-					c.setBackground(new Color(128, 191, 255));
-					break;
-				case "Aeroyoga":
-					c.setBackground(Color.YELLOW);
-					break;
-				case "Pilates":
-					c.setBackground(Color.RED);
-					break;
-				case "HIIt":
-					c.setBackground(Color.GRAY);
-					break;
-				case "Funcional":
-					c.setBackground(new Color(139, 69, 19)); // Marrón
-					break;
-				default:
-					c.setBackground(table.getBackground());
+				 // Asignar colores según la actividad
+	            switch (actividad) {
+	                case "Yoga":
+	                    c.setBackground(Color.PINK);
+	                    icono = new ImageIcon("img/yoga.png");
+	                    JLabel a = new JLabel();
+	                    a.setHorizontalAlignment(JLabel.CENTER);
+	                    a.setIcon(icono);
+	                    return a;
+	                
+	                case "Spinning":
+	                    c.setBackground(Color.GREEN);
+	                    icono = new ImageIcon("img/spinning.png");
+	                    JLabel b = new JLabel();
+	                    b.setHorizontalAlignment(JLabel.CENTER);
+	                    b.setIcon(icono);
+	                    return b;
+
+	                case "Core":
+	                    c.setBackground(Color.YELLOW);
+	                    icono = new ImageIcon("img/core.png");
+	                    JLabel d = new JLabel();
+	                    d.setHorizontalAlignment(JLabel.CENTER);
+	                    d.setIcon(icono);
+	                    return d;
+
+	                case "Boxeo":
+	                    c.setBackground(new Color(128, 191, 255));
+	                    icono = new ImageIcon("img/boxeo.png");
+	                    JLabel e = new JLabel();
+	                    e.setHorizontalAlignment(JLabel.CENTER);
+	                    e.setIcon(icono);
+	                    return e;
+
+	                case "Aeroyoga":
+	                    c.setBackground(Color.YELLOW);
+	                    icono = new ImageIcon("img/aeroyoga.png");
+	                    JLabel f = new JLabel();
+	                    f.setHorizontalAlignment(JLabel.CENTER);
+	                    f.setIcon(icono);
+	                    return f;
+	                    
+	                case "Pilates":
+	                    c.setBackground(Color.RED);
+	                    icono = new ImageIcon("img/pilates.png");
+	                    JLabel g = new JLabel();
+	                    g.setHorizontalAlignment(JLabel.CENTER);
+	                    g.setIcon(icono);
+	                    return g;
+
+	                case "HIIt":
+	                    c.setBackground(Color.GRAY);
+	                    icono = new ImageIcon("img/hiit.png");
+	                    JLabel h = new JLabel();
+	                    h.setHorizontalAlignment(JLabel.CENTER);
+	                    h.setIcon(icono);
+	                    return h;
+
+	                case "Funcional":
+	                    c.setBackground(new Color(139, 69, 19)); // Marrón
+	                    icono = new ImageIcon("img/funcional.png");
+	                    JLabel i = new JLabel();
+	                    i.setHorizontalAlignment(JLabel.CENTER);
+	                    i.setIcon(icono);
+	                    return i;
+
+	                default:
+	                    c.setBackground(table.getBackground());
 				}
 
 				return c;

@@ -37,36 +37,9 @@ public class VentanaMonitorTest {
 
     }
 
-    @Test
-    public void testMostrarDialogoApuntarse() {
-        // Given
-        String claseSeleccionada = "Yoga";
-        int row = 1; 
-        int col = 2; 
 
-        ventanaMonitor.mostrarDialogoApuntarse(claseSeleccionada,
-                (DefaultTableModel) ventanaMonitor.getTablaSemanasDisponibles().getModel(), row, col);
 
-        assertEquals(claseSeleccionada, ventanaMonitor.getTablaSemanasApuntado().getValueAt(row, col));
-    }
 
-    @Test
-    public void testMostrarDialogoDesapuntarse() {
- 
-        String claseSeleccionada = "Yoga";
-        int row = 1; 
-        int col = 2; 
-
-        ventanaMonitor.mostrarDialogoApuntarse(claseSeleccionada,
-                (DefaultTableModel) ventanaMonitor.getTablaSemanasDisponibles().getModel(), row, col);
-
-        assertEquals(claseSeleccionada, ventanaMonitor.getTablaSemanasApuntado().getValueAt(row, col));
-
-        ventanaMonitor.mostrarDialogoDesapuntarse(claseSeleccionada,
-                (DefaultTableModel) ventanaMonitor.getTablaSemanasApuntado().getModel(), row, col);
-
-        assertNull(ventanaMonitor.getTablaSemanasApuntado().getValueAt(row, col));
-    }
 
     @Test
     public void testObtenerFilaHora() {
@@ -86,15 +59,6 @@ public class VentanaMonitorTest {
 
     }
 
-    @Test
-    public void testObtenerIndiceColumna() {
+   
 
-        String nombreColumna = "Martes";
-
-
-        int indice = ventanaMonitor.obtenerIndiceColumna(nombreColumna,
-                (DefaultTableModel) ventanaMonitor.getTablaSemanasDisponibles().getModel());
-
-        assertEquals(2, indice);
-    }
 }

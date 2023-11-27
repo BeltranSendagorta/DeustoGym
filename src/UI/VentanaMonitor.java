@@ -87,12 +87,12 @@ public class VentanaMonitor {
         
     }
 
-    private JTable crearTablaClasesApuntadas() {
+    public JTable crearTablaClasesApuntadas() {
 		JTable tabla = new JTable();
 		DefaultTableModel modeloTabla = new DefaultTableModel(0, 7) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				// Solo permite la edición de celdas que no están en la primera fila
+				
 				return row > 0;
 			}
 		};
@@ -136,7 +136,7 @@ public class VentanaMonitor {
 		return tabla;
 	}
 
-    private JTable crearTablaClasesDisponibles() {
+    public JTable crearTablaClasesDisponibles() {
 		JTable tabla = new JTable();
 		DefaultTableModel modeloTabla = new DefaultTableModel(0, 7) {
 			@Override
@@ -256,7 +256,7 @@ public class VentanaMonitor {
 		tablaSemanasApuntado.setValueAt(claseSeleccionada, filaDisponibles, col);
 	}
     
-    private void mostrarMaterialNecesario(String clase) {
+    public void mostrarMaterialNecesario(String clase) {
 	    String materialMonitor = "Material necesario para " + clase + ":\n\n";
 
 	    switch (clase) {
@@ -293,7 +293,7 @@ public class VentanaMonitor {
 	    JOptionPane.showMessageDialog(frame, materialMonitor, "Material Necesario para el Monitor", JOptionPane.INFORMATION_MESSAGE);
 	}
  
-    private void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
+    public void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
 	    String hora = (String) modeloTabla.getValueAt(row, 0);
 	    String dia = modeloTabla.getColumnName(col);
 
@@ -335,7 +335,7 @@ public class VentanaMonitor {
 		}
 	}
     
-    private int obtenerFilaHora(String hora) {
+    public int obtenerFilaHora(String hora) {
         DefaultTableModel modelo = (DefaultTableModel) tablaSemanasApuntado.getModel();
         for (int fila = 0; fila < modelo.getRowCount(); fila++) {
             String horaTabla = (String) modelo.getValueAt(fila, 0);
@@ -346,11 +346,11 @@ public class VentanaMonitor {
         return -1;
     }
 
-     private void mostrarDialogoReservaExitosa(String entrenamientoSeleccionado) {
+     public void mostrarDialogoReservaExitosa(String entrenamientoSeleccionado) {
 		JOptionPane.showMessageDialog(frame,
 				"Tu reserva de " + entrenamientoSeleccionado + " se ha realizado con éxito.");
 	}
-    private int obtenerIndiceColumna(String nombreColumna, DefaultTableModel modeloTabla) {
+    public int obtenerIndiceColumna(String nombreColumna, DefaultTableModel modeloTabla) {
         for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
             if (modeloTabla.getColumnName(i).equals(nombreColumna)) {
                 return i;

@@ -14,7 +14,7 @@ import java.util.StringTokenizer;
 import java.net.URL;
 
 public class VentanaUsuario {
-	private JFrame frame;
+	public JFrame frame;
 	private DefaultListModel<String> modeloLista;
 	private JList<String> listaActividades;
 	private JTable tablaSemanasApuntado;
@@ -81,7 +81,7 @@ public class VentanaUsuario {
 		frame.setVisible(true);
 	}
 
-	private JTable crearTablaClasesApuntadas() {
+	public JTable crearTablaClasesApuntadas() {
 		JTable tabla = new JTable();
 		DefaultTableModel modeloTabla = new DefaultTableModel(0, 7) {
 			@Override
@@ -127,8 +127,14 @@ public class VentanaUsuario {
 
 		return tabla;
 	}
+	
+	public JTable getTablaClasesApuntadas() {
+	    return tablaSemanasApuntado;
+	}
+	
+	
 
-	private JTable crearTablaClasesDisponibles() {
+	public JTable crearTablaClasesDisponibles() {
 	    JTable tabla = new JTable();
 	    DefaultTableModel modeloTabla = new DefaultTableModel(0, 7) {
 	        @Override
@@ -243,25 +249,32 @@ public class VentanaUsuario {
 
 	return tabla;
 	}
+	
+	public JTable getTablaClasesDisponibles() {
+	    return tablaSemanasDisponibles;
+	}
+	
 
 
-	private void agregarClaseAClasesApuntadas(String claseSeleccionada, int row, int col) {
-		String hora = (String) tablaSemanasDisponibles.getValueAt(row, 0);
-		String dia = tablaSemanasDisponibles.getColumnName(col);
+	public void agregarClaseAClasesApuntadas(String claseSeleccionada, int row, int col) {
+	    String hora = (String) tablaSemanasDisponibles.getValueAt(row, 0);
+	    String dia = tablaSemanasDisponibles.getColumnName(col);
 
-		int filaDisponibles = obtenerFilaHora(hora);
+	    int filaDisponibles = obtenerFilaHora(hora);
 
-		if (tablaSemanasApuntado.getValueAt(filaDisponibles, col) != null) {
-			String claseDesapuntada = (String) tablaSemanasApuntado.getValueAt(filaDisponibles, col);
-			mostrarDialogoDesapuntarse(claseDesapuntada, (DefaultTableModel) tablaSemanasApuntado.getModel(),
-					filaDisponibles, col);
-		}
+	    if (tablaSemanasApuntado.getValueAt(filaDisponibles, col) != null) {
+	        String claseDesapuntada = (String) tablaSemanasApuntado.getValueAt(filaDisponibles, col);
+	        mostrarDialogoDesapuntarse(claseDesapuntada, (DefaultTableModel) tablaSemanasApuntado.getModel(),
+	                filaDisponibles, col);
+	    }
 
-		modeloLista.addElement(claseSeleccionada);
-		tablaSemanasApuntado.setValueAt(claseSeleccionada, filaDisponibles, col);
+	    modeloLista.addElement(claseSeleccionada);
+	    tablaSemanasApuntado.setValueAt(claseSeleccionada, filaDisponibles, col);
 	}
 
-	private void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
+
+
+	public void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
 		String hora = (String) modeloTabla.getValueAt(row, 0);
 		String dia = modeloTabla.getColumnName(col);
 
@@ -283,7 +296,7 @@ public class VentanaUsuario {
 		}
 	}
 
-	private void mostrarDialogoDesapuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
+	public void mostrarDialogoDesapuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
 		String[] opciones = { "Sí", "No" };
 
 		String rutaIcono = "ruta/de/tu/carpeta/img/logo.ico";
@@ -311,7 +324,7 @@ public class VentanaUsuario {
 		}
 	}
 
-	private int obtenerFilaHora(String hora) {
+	public int obtenerFilaHora(String hora) {
 		DefaultTableModel modelo = (DefaultTableModel) tablaSemanasApuntado.getModel();
 		for (int fila = 0; fila < modelo.getRowCount(); fila++) {
 			String horaTabla = (String) modelo.getValueAt(fila, 0);
@@ -322,7 +335,7 @@ public class VentanaUsuario {
 		return -1;
 	}
 
-	private int obtenerIndiceColumna(String nombreColumna, DefaultTableModel modeloTabla) {
+	public int obtenerIndiceColumna(String nombreColumna, DefaultTableModel modeloTabla) {
 		for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
 			if (modeloTabla.getColumnName(i).equals(nombreColumna)) {
 				return i;
@@ -331,7 +344,7 @@ public class VentanaUsuario {
 		return -1;
 	}
 
-	private void mostrarDialogoReservaExitosa(String entrenamientoSeleccionado) {
+	public void mostrarDialogoReservaExitosa(String entrenamientoSeleccionado) {
 		JOptionPane.showMessageDialog(frame,
 				"Tu reserva de " + entrenamientoSeleccionado + " se ha realizado con éxito.");
 	}

@@ -1,6 +1,9 @@
 package UI;
 
 import javax.swing.*;
+
+
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,15 +18,8 @@ public class VentanaSesion {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.BLACK);
         frame.setLayout(new BorderLayout());
-
-        // Cargar el logo desde la carpeta "img"
-        ImageIcon logo = createImageIcon("img/logo.png");
-
-        if (logo != null) {
-            // Configuración del logo
-            JLabel logoLabel = new JLabel(logo);
-            frame.add(logoLabel, BorderLayout.WEST);
-        }
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaSesion.class.getResource("/img/logo.png")));
+       
 
         // Configuración del nombre
         JLabel nombreEmpresaLabel = new JLabel("DeustoGym");
@@ -90,7 +86,11 @@ public class VentanaSesion {
             return null;
         }
     }
-
+    
+    public void setIconImage(Image image) {
+        frame.setIconImage(image);
+    }
+ 
     public static void main(String[] args) {
         VentanaSesion ventanaSesion = new VentanaSesion();
         ventanaSesion.mostrarVentana();

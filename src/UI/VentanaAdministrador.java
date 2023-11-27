@@ -33,7 +33,6 @@ public class VentanaAdministrador {
         panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
         frame.add(panelApuntado, BorderLayout.CENTER);
 
-      
         JTextArea gananciasTextArea = new JTextArea();
         gananciasTextArea.setEditable(false);
         frame.add(new JScrollPane(gananciasTextArea), BorderLayout.SOUTH);
@@ -66,7 +65,7 @@ public class VentanaAdministrador {
         frame.setVisible(true);
     }
 
-    private JTable crearTabla() {
+    public JTable crearTabla() {
         JTable tabla = new JTable();
         DefaultTableModel modeloTabla = new DefaultTableModel(0, 8) {
             @Override
@@ -217,16 +216,14 @@ public class VentanaAdministrador {
      
         Map<String, String> asignacionClasesProfesores = new HashMap<>();
         asignacionClasesProfesores.put("Yoga", "Koldo");
-        asignacionClasesProfesores.put("Yoga", "Peio");
-        asignacionClasesProfesores.put("Yoga", "Kepa");
-        asignacionClasesProfesores.put("Spinning", "Jose");
-        asignacionClasesProfesores.put("Spinning", "Nerea");
-        asignacionClasesProfesores.put("Spinning", "Alex");
-        asignacionClasesProfesores.put("Core", "Beltran");
-        asignacionClasesProfesores.put("Core", "Maider");
-        asignacionClasesProfesores.put("Core", "Malen");
+        asignacionClasesProfesores.put("Spinning", "Peio");
+        asignacionClasesProfesores.put("Core", "Kepa");
+        asignacionClasesProfesores.put("Boxeo", "Jose");
+        asignacionClasesProfesores.put("Aeroyoga", "Nerea");
+        asignacionClasesProfesores.put("Pilates", "Alex");
+        asignacionClasesProfesores.put("HIIt", "Beltran");
+        asignacionClasesProfesores.put("Funcional", "Maider");
 
-    
         return asignacionClasesProfesores.get(clase);
     }
 

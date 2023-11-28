@@ -3,6 +3,9 @@ package UI;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedReader;
@@ -33,7 +36,6 @@ public class VentanaAdministrador {
         panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
         frame.add(panelApuntado, BorderLayout.CENTER);
 
-      
         JTextArea gananciasTextArea = new JTextArea();
         gananciasTextArea.setEditable(false);
         frame.add(new JScrollPane(gananciasTextArea), BorderLayout.SOUTH);
@@ -66,8 +68,19 @@ public class VentanaAdministrador {
         frame.setVisible(true);
     }
 
-    private JTable crearTabla() {
-        JTable tabla = new JTable();
+    public JTable crearTabla() {
+    	  JTable tabla = new JTable() {
+    	        @Override
+    	        public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+    	            Component comp = super.prepareRenderer(renderer, row, column);
+    	            int rendererWidth = comp.getPreferredSize().width;
+    	            TableColumn tableColumn = getColumnModel().getColumn(column);
+    	            tableColumn.setPreferredWidth(100); 
+    	            setRowHeight(25); 
+    	            return comp;
+    	        }
+        };
+
         DefaultTableModel modeloTabla = new DefaultTableModel(0, 8) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -76,13 +89,14 @@ public class VentanaAdministrador {
         };
 
         try (BufferedReader br = new BufferedReader(new FileReader("Horario2023.csv"))) {
+            br.readLine();
             String line;
             while ((line = br.readLine()) != null) {
                 StringTokenizer tokenizer = new StringTokenizer(line, ",");
                 String hora = tokenizer.nextToken();
                 String[] clases = new String[7];
 
-                // Verificar si hay suficientes tokens antes de acceder a ellos
+             
                 for (int i = 0; i < clases.length && tokenizer.hasMoreTokens(); i++) {
                     clases[i] = tokenizer.nextToken();
                 }
@@ -107,37 +121,65 @@ public class VentanaAdministrador {
 
                 String actividad = (value != null) ? value.toString() : "";
 
-                // Asignar colores según la actividad
+                ImageIcon icono;
+             
                 switch (actividad) {
                     case "Yoga":
                         c.setBackground(Color.PINK);
+                        icono = resizeImage("img/yoga.png");
                         break;
                     case "Spinning":
                         c.setBackground(Color.GREEN);
+                        icono = resizeImage("img/spinning.png");
                         break;
                     case "Core":
                         c.setBackground(Color.YELLOW);
+                        icono = resizeImage("img/core.png");
                         break;
                     case "Boxeo":
-                    	 c.setBackground(new Color(128, 191, 255));
+                        c.setBackground(new Color(128, 191, 255));
+                        icono = resizeImage("img/boxeo.png");
                         break;
                     case "Aeroyoga":
                         c.setBackground(Color.YELLOW);
+                        icono = resizeImage("img/aeroyoga.png");
                         break;
                     case "Pilates":
                         c.setBackground(Color.RED);
+                        icono = resizeImage("img/pilates.png");
                         break;
                     case "HIIt":
                         c.setBackground(Color.GRAY);
+                        icono = resizeImage("img/hiit.png");
                         break;
                     case "Funcional":
-                        c.setBackground(new Color(139, 69, 19));  // Marrón
+                        c.setBackground(new Color(139, 69, 19)); // Marrón
+                        icono = resizeImage("img/funcional.png");
                         break;
+
                     default:
                         c.setBackground(table.getBackground());
+                        icono = null;
+                }
+
+              
+                if (icono != null) {
+                    JLabel label = new JLabel();
+                    label.setHorizontalAlignment(JLabel.CENTER);
+                    label.setIcon(icono);
+                    label.setOpaque(true);
+                    label.setBackground(table.getBackground());
+                    return label;
                 }
 
                 return c;
+            }
+
+            private ImageIcon resizeImage(String imagePath) {
+                ImageIcon originalIcon = new ImageIcon(imagePath);
+                Image image = originalIcon.getImage();
+                Image resizedImage = image.getScaledInstance(35, 20, java.awt.Image.SCALE_SMOOTH);
+                return new ImageIcon(resizedImage);
             }
         };
 
@@ -162,7 +204,7 @@ public class VentanaAdministrador {
             }
         }
 
-        // Añadir las claves que no estén en el mapa gananciasProfesores con valor 0.
+       
         Set<String> profesoresAsignados = new HashSet<>(gananciasProfesores.keySet());
         Set<String> profesoresEsperados = new HashSet<>(Arrays.asList("Koldo", "Peio", "Kepa", "Jose", "Nerea", "Alex", "Beltran", "Maider", "Malen"));
         profesoresEsperados.removeAll(profesoresAsignados);
@@ -177,16 +219,14 @@ public class VentanaAdministrador {
      
         Map<String, String> asignacionClasesProfesores = new HashMap<>();
         asignacionClasesProfesores.put("Yoga", "Koldo");
-        asignacionClasesProfesores.put("Yoga", "Peio");
-        asignacionClasesProfesores.put("Yoga", "Kepa");
-        asignacionClasesProfesores.put("Spinning", "Jose");
-        asignacionClasesProfesores.put("Spinning", "Nerea");
-        asignacionClasesProfesores.put("Spinning", "Alex");
-        asignacionClasesProfesores.put("Core", "Beltran");
-        asignacionClasesProfesores.put("Core", "Maider");
-        asignacionClasesProfesores.put("Core", "Malen");
+        asignacionClasesProfesores.put("Spinning", "Peio");
+        asignacionClasesProfesores.put("Core", "Kepa");
+        asignacionClasesProfesores.put("Boxeo", "Jose");
+        asignacionClasesProfesores.put("Aeroyoga", "Nerea");
+        asignacionClasesProfesores.put("Pilates", "Alex");
+        asignacionClasesProfesores.put("HIIt", "Beltran");
+        asignacionClasesProfesores.put("Funcional", "Maider");
 
-    
         return asignacionClasesProfesores.get(clase);
     }
 

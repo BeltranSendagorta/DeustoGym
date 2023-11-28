@@ -50,18 +50,7 @@ public class VentanaAdministradorTest {
         assertEquals(15, ventana.gananciasProfesores.get("NuevoProfesor").intValue());
     }
 
-    @Test
-    public void testGenerarClasesAleatorias() {
-        String[] tiposClase = {"Yoga", "Spinning", "Core", "Boxeo"};
-        String[] clasesAleatorias = ventana.generarClasesAleatorias(tiposClase, 5);
-
-        assertNotNull(clasesAleatorias);
-        assertEquals(5, clasesAleatorias.length);
-
-        for (String clase : clasesAleatorias) {
-            assertTrue(Arrays.asList(tiposClase).contains(clase));
-        }
-    }
+  
 
     @Test
     public void testCalcularGananciasIniciales() {

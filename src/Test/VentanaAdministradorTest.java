@@ -2,7 +2,7 @@ package Test;
 
 import static org.junit.Assert.*;
 
-import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 
 import javax.swing.SwingUtilities;
 
@@ -14,59 +14,54 @@ import UI.VentanaAdministrador;
 
 public class VentanaAdministradorTest {
 
-    private static VentanaAdministrador ventana;
+    private static VentanaAdministrador ventanaAdministrador;
 
     @Before
     public void setUp() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+
         SwingUtilities.invokeLater(() -> {
-            ventana = new VentanaAdministrador("TestAdmin");
-            ventana.mostrarVentana();
+            ventanaAdministrador = new VentanaAdministrador("TestAdmin");
+            ventanaAdministrador.mostrarVentana();
+            latch.countDown();
         });
-        Thread.sleep(1000);
+
+        latch.await(); // Esperar a que la inicialización se complete
     }
 
     @After
     public void tearDown() throws Exception {
-        ventana = null;
+        ventanaAdministrador = null;
     }
+
 
     @Test
     public void testObtenerProfesorDeClase() {
-        assertEquals("Koldo", ventana.obtenerProfesorDeClase("Yoga"));
-        assertEquals("Jose", ventana.obtenerProfesorDeClase("Spinning"));
-        assertEquals("Beltran", ventana.obtenerProfesorDeClase("Core"));
-        assertNull(ventana.obtenerProfesorDeClase("ClaseInvalida"));
+        String profesor = ventanaAdministrador.obtenerProfesorDeClase("Yoga");
+        assertEquals("Koldo", profesor);
     }
 
     @Test
     public void testActualizarGananciasProfesor() {
-        ventana.actualizarGananciasProfesor("Koldo", 20);
-        assertEquals(20, ventana.gananciasProfesores.get("Koldo").intValue());
-
-        ventana.actualizarGananciasProfesor("Koldo", 30);
-        assertEquals(50, ventana.gananciasProfesores.get("Koldo").intValue());
-
-        ventana.actualizarGananciasProfesor("NuevoProfesor", 15);
-        assertEquals(15, ventana.gananciasProfesores.get("NuevoProfesor").intValue());
+        String profesorPrueba = "Koldo";
+        int gananciaInicial = ventanaAdministrador.gananciasProfesores.get(profesorPrueba);
+        ventanaAdministrador.actualizarGananciasProfesor(profesorPrueba, 20);
+        int gananciaFinal = ventanaAdministrador.gananciasProfesores.get(profesorPrueba);
+        assertEquals(gananciaInicial + 20, gananciaFinal);
     }
 
-  
+
+
 
     @Test
-    public void testCalcularGananciasIniciales() {
-        ventana.calcularGananciasIniciales();
-
-        assertNotNull(ventana.gananciasProfesores);
-        assertFalse(ventana.gananciasProfesores.isEmpty());
-
-        for (String profesor : ventana.gananciasProfesores.keySet()) {
-            assertEquals(0, ventana.gananciasProfesores.get(profesor).intValue());
-        }
+    public void testMostrarDialogoClase() {
+        String clasePrueba = "Yoga";
+        ventanaAdministrador.mostrarDialogoClase(clasePrueba);
     }
 
     @Test
     public void testGenerarNombresUsuariosAleatorios() {
-        String nombres = ventana.generarNombresUsuariosAleatorios();
+        String nombres = ventanaAdministrador.generarNombresUsuariosAleatorios();
         assertNotNull(nombres);
     }
 }

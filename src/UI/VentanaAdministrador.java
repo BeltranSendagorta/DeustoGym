@@ -18,6 +18,8 @@ public class VentanaAdministrador {
     private DefaultListModel<String> modeloLista;
     private JTable tablaSemanasApuntado;
     public Map<String, Integer> gananciasProfesores;
+    
+    
 
     public VentanaAdministrador(String nombreAdministrador) {
         frame = new JFrame("Ventana de Administrador");
@@ -69,6 +71,7 @@ public class VentanaAdministrador {
     }
 
     public JTable crearTabla() {
+
     	  JTable tabla = new JTable() {
     	        @Override
     	        public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
@@ -80,6 +83,7 @@ public class VentanaAdministrador {
     	            return comp;
     	        }
         };
+
 
         DefaultTableModel modeloTabla = new DefaultTableModel(0, 8) {
             @Override
@@ -121,7 +125,7 @@ public class VentanaAdministrador {
 
                 String actividad = (value != null) ? value.toString() : "";
 
-                ImageIcon icono;
+  ImageIcon icono;
              
                 switch (actividad) {
                     case "Yoga":
@@ -170,6 +174,7 @@ public class VentanaAdministrador {
                     label.setOpaque(true);
                     label.setBackground(table.getBackground());
                     return label;
+
                 }
 
                 return c;

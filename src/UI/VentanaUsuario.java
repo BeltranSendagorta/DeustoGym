@@ -174,91 +174,74 @@ public class VentanaUsuario {
 	    tabla.setShowGrid(true);
 	    tabla.setCellSelectionEnabled(true);
 
-	    DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-	        private final JLabel label = new JLabel();
+		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-	        @Override
-	        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-	                                                       boolean hasFocus, int row, int column) {
-	            Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				String actividad = (value != null) ? value.toString() : "";
 
-	            String actividad = (value != null) ? value.toString() : "";
-	            ImageIcon icono = null;
+				ImageIcon icono;
 
-	            // Asignar colores según la actividad
-	            switch (actividad) {
-	                case "Yoga":
-	                    c.setBackground(Color.PINK);
-	                    icono = new ImageIcon("img/yoga.png");
-	                    JLabel a = new JLabel();
-	                    a.setHorizontalAlignment(JLabel.CENTER);
-	                    a.setIcon(icono);
-	                    return a;
-	                
-	                case "Spinning":
-	                    c.setBackground(Color.GREEN);
-	                    icono = new ImageIcon("img/spinning.png");
-	                    JLabel b = new JLabel();
-	                    b.setHorizontalAlignment(JLabel.CENTER);
-	                    b.setIcon(icono);
-	                    return b;
+				switch (actividad) {
+				case "Yoga":
+					c.setBackground(Color.PINK);
+					icono = resizeImage("img/yoga.png");
+					break;
+				case "Spinning":
+					c.setBackground(Color.GREEN);
+					icono = resizeImage("img/spinning.png");
+					break;
+				case "Core":
+					c.setBackground(Color.YELLOW);
+					icono = resizeImage("img/core.png");
+					break;
+				case "Boxeo":
+					c.setBackground(new Color(128, 191, 255));
+					icono = resizeImage("img/boxeo.png");
+					break;
+				case "Aeroyoga":
+					c.setBackground(Color.YELLOW);
+					icono = resizeImage("img/aeroyoga.png");
+					break;
+				case "Pilates":
+					c.setBackground(Color.RED);
+					icono = resizeImage("img/pilates.png");
+					break;
+				case "HIIt":
+					c.setBackground(Color.GRAY);
+					icono = resizeImage("img/hiit.png");
+					break;
+				case "Funcional":
+					c.setBackground(new Color(139, 69, 19)); // Marrón
+					icono = resizeImage("img/funcional.png");
+					break;
 
-	                case "Core":
-	                    c.setBackground(Color.YELLOW);
-	                    icono = new ImageIcon("img/core.png");
-	                    JLabel d = new JLabel();
-	                    d.setHorizontalAlignment(JLabel.CENTER);
-	                    d.setIcon(icono);
-	                    return d;
+				default:
+					c.setBackground(table.getBackground());
+					icono = null;
+				}
 
-	                case "Boxeo":
-	                    c.setBackground(new Color(128, 191, 255));
-	                    icono = new ImageIcon("img/boxeo.png");
-	                    JLabel e = new JLabel();
-	                    e.setHorizontalAlignment(JLabel.CENTER);
-	                    e.setIcon(icono);
-	                    return e;
+				if (icono != null) {
+					JLabel label = new JLabel();
+					label.setHorizontalAlignment(JLabel.CENTER);
+					label.setIcon(icono);
+					label.setOpaque(true);
+					label.setBackground(table.getBackground());
+					return label;
+				}
 
-	                case "Aeroyoga":
-	                    c.setBackground(Color.YELLOW);
-	                    icono = new ImageIcon("img/aeroyoga.png");
-	                    JLabel f = new JLabel();
-	                    f.setHorizontalAlignment(JLabel.CENTER);
-	                    f.setIcon(icono);
-	                    return f;
-	                    
-	                case "Pilates":
-	                    c.setBackground(Color.RED);
-	                    icono = new ImageIcon("img/pilates.png");
-	                    JLabel g = new JLabel();
-	                    g.setHorizontalAlignment(JLabel.CENTER);
-	                    g.setIcon(icono);
-	                    return g;
-
-	                case "HIIt":
-	                    c.setBackground(Color.GRAY);
-	                    icono = new ImageIcon("img/hiit.png");
-	                    JLabel h = new JLabel();
-	                    h.setHorizontalAlignment(JLabel.CENTER);
-	                    h.setIcon(icono);
-	                    return h;
-
-	                case "Funcional":
-	                    c.setBackground(new Color(139, 69, 19)); // Marrón
-	                    icono = new ImageIcon("img/funcional.png");
-	                    JLabel i = new JLabel();
-	                    i.setHorizontalAlignment(JLabel.CENTER);
-	                    i.setIcon(icono);
-	                    return i;
-
-	                default:
-	                    c.setBackground(table.getBackground());
-	            }
 				return c;
+			}
 
-	           
-	    }
-	};
+			private ImageIcon resizeImage(String imagePath) {
+				ImageIcon originalIcon = new ImageIcon(imagePath);
+				Image image = originalIcon.getImage();
+				Image resizedImage = image.getScaledInstance(35, 20, java.awt.Image.SCALE_SMOOTH);
+				return new ImageIcon(resizedImage);
+			}
+		};
 
 	    for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
 	        tabla.getColumnModel().getColumn(i).setCellRenderer(renderer);

@@ -3,6 +3,9 @@ package UI;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -135,7 +138,18 @@ public class VentanaUsuario {
 	
 
 	public JTable crearTablaClasesDisponibles() {
-	    JTable tabla = new JTable();
+		JTable tabla = new JTable() {
+			@Override
+			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+				Component comp = super.prepareRenderer(renderer, row, column);
+				int rendererWidth = comp.getPreferredSize().width;
+				TableColumn tableColumn = getColumnModel().getColumn(column);
+				tableColumn.setPreferredWidth(100);
+				setRowHeight(25);
+				return comp;
+			}
+		};
+
 	    DefaultTableModel modeloTabla = new DefaultTableModel(0, 7) {
 	        @Override
 	        public boolean isCellEditable(int row, int column) {

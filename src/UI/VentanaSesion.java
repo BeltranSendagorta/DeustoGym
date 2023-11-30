@@ -61,10 +61,10 @@ public class VentanaSesion {
         iniciarSesionAdminButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Lógica para la ventana de inicio de sesión del administrador
+               
                 VentanaInicioSesionAdministrador ventanaInicioSesionAdministrador = new VentanaInicioSesionAdministrador();
 				ventanaInicioSesionAdministrador.mostrarVentana();
-                frame.dispose(); // Cerrar la ventana actual
+                frame.dispose();
             }
         });
         panelBotones.add(iniciarSesionAdminButton);

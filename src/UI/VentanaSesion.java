@@ -18,7 +18,7 @@ public class VentanaSesion {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.BLACK);
         frame.setLayout(new BorderLayout());
-        this.setIconImage(Toolkit.getDefaultToolkit().getImage(VentanaSesion.class.getResource("/img/logo.png")));
+      
        
 
         // Configuración del nombre

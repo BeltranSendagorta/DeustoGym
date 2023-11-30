@@ -1,5 +1,5 @@
 package DeustoGym;
 
-public enum Entrenamientos {
+public enum TiposEntrenamientos {
 	SPINNING, YOGA, BOXEO, AEROYOGA, PILATES, HIIT, FUNCIONAL
 }

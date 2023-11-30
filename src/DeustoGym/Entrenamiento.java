@@ -9,7 +9,7 @@ public class Entrenamiento {
     private String horaInicio;
     private String horaFin;
     private List<String> asistentes;
-    private List<String> listaEspera; // Nueva lista de espera
+    private List<String> listaEspera; 
     private String monitor;
 
     public Entrenamiento(TiposEntrenamientos tipo, int duracion, String horaInicio, String horaFin, String monitor) {

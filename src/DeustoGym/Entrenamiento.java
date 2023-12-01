@@ -81,18 +81,16 @@ public class Entrenamiento {
     }
 
     public static void main(String[] args) {
-        // Crear un entrenamiento de tipo SPINNING con una duración de 60 minutos
+       
         Entrenamiento spinning = new Entrenamiento(TiposEntrenamientos.SPINNING, 60, "10:00", "11:00", "Monitor1");
 
-        // Agregar asistentes al entrenamiento
         spinning.agregarAsistente("Asistente1");
         spinning.agregarAsistente("Asistente2");
         spinning.agregarAsistente("Asistente3");
         spinning.agregarAsistente("Asistente4");
-        spinning.agregarAsistente("Asistente5"); // Llega al máximo permitido
-        spinning.agregarAsistente("Asistente6"); // Va a la lista de espera
+        spinning.agregarAsistente("Asistente5"); 
+        spinning.agregarAsistente("Asistente6"); 
 
-        // Mostrar detalles del entrenamiento
         spinning.mostrarDetalles();
     }
 }

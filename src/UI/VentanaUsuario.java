@@ -3,8 +3,11 @@ package UI;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+
+import DeustoGym.DeustoGym;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -17,12 +20,13 @@ import java.util.StringTokenizer;
 import java.net.URL;
 
 public class VentanaUsuario {
-	public JFrame frame;
-	private DefaultListModel<String> modeloLista;
-	private JList<String> listaActividades;
-	private JTable tablaSemanasApuntado;
-	private JTable tablaSemanasDisponibles;
-	private String[][] actividadesDisponibles = {
+    private DeustoGym deustoGym;
+    public JFrame frame;
+    private DefaultListModel<String> modeloLista;
+    private JList<String> listaActividades;
+    private JTable tablaSemanasApuntado;
+    private JTable tablaSemanasDisponibles;
+    private String[][] actividadesDisponibles = {
 			{ "Spinning", "Yoga", "Boxeo", "Aeroyoga", "Pilates", "Spinning", "Boxeo" },
 			{ "Yoga", "Pilates", "HIIt", "Entrenamiento funcional", "Spinning", "Yoga", "Pilates" },
 			{ "Boxeo", "HIIt", "Entrenamiento funcional", "Spinning", "Yoga", "Boxeo", "HIIt" },
@@ -38,50 +42,61 @@ public class VentanaUsuario {
 			{ "Aeroyoga", "Entrenamiento funcional", "Spinning", "Yoga", "Boxeo", "", "" },
 			{ "Pilates", "Spinning", "Yoga", "Boxeo", "Aeroyoga", "", "" } };
 
-	public VentanaUsuario(String nombreUsuario) {
-		
-		frame = new JFrame("Ventana de Usuario");
-		frame.setSize(800, 600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setLayout(new BorderLayout());
 
-		JLabel perfilLabel = new JLabel("Perfil del Usuario: " + nombreUsuario);
-		perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
-		perfilLabel.setForeground(Color.BLACK);
-		frame.add(perfilLabel, BorderLayout.NORTH);
+    public VentanaUsuario(String nombreUsuario) {
+        frame = new JFrame("Ventana de Usuario");
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setBackground(Color.WHITE);
+        frame.setLayout(new BorderLayout());
 
-		JTabbedPane tabbedPane = new JTabbedPane();
+        JLabel perfilLabel = new JLabel("Perfil del Usuario: " + nombreUsuario);
+        perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
+        perfilLabel.setForeground(Color.BLACK);
+        frame.add(perfilLabel, BorderLayout.NORTH);
 
-		JPanel panelApuntado = new JPanel(new BorderLayout());
-		tablaSemanasApuntado = crearTablaClasesApuntadas();
-		panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
+        JTabbedPane tabbedPane = new JTabbedPane();
 
-		JPanel panelDisponibles = new JPanel(new BorderLayout());
-		tablaSemanasDisponibles = crearTablaClasesDisponibles();
-		panelDisponibles.add(new JScrollPane(tablaSemanasDisponibles), BorderLayout.CENTER);
+        JPanel panelApuntado = new JPanel(new BorderLayout());
+        tablaSemanasApuntado = crearTablaClasesApuntadas();
+        panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
 
-		tabbedPane.addTab("Clases Apuntadas", panelApuntado);
-		tabbedPane.addTab("Clases Disponibles", panelDisponibles);
+        JPanel panelDisponibles = new JPanel(new BorderLayout());
+        this.deustoGym = new DeustoGym();
+        String[][] horario = deustoGym.leerHorarioDesdeCSV("Horario2023.csv");
 
-		frame.add(tabbedPane, BorderLayout.CENTER);
+        // Crear la tabla de clases disponibles
+        tablaSemanasDisponibles = crearTablaClasesDisponibles(horario);
 
-		modeloLista = new DefaultListModel<>();
-		listaActividades = new JList<>(modeloLista);
-		listaActividades.setBackground(new Color(240, 240, 240));
-		JScrollPane scrollLista = new JScrollPane(listaActividades);
-		frame.add(scrollLista, BorderLayout.EAST);
+        // Verificar si ya hay datos en la tabla
+        if (tablaSemanasDisponibles.getRowCount() == 0) {
+            deustoGym.cargarHorarioDesdeCSV((DefaultTableModel) tablaSemanasDisponibles.getModel(), actividadesDisponibles);
+        }
 
-		listaActividades.addMouseListener(new java.awt.event.MouseAdapter() {
-			@Override
-			public void mouseClicked(java.awt.event.MouseEvent evt) {
-				int index = listaActividades.locationToIndex(evt.getPoint());
-				String entrenamientoSeleccionado = modeloLista.getElementAt(index);
-				mostrarDialogoReservaExitosa(entrenamientoSeleccionado);
-			}
-		});
+        panelDisponibles.add(new JScrollPane(tablaSemanasDisponibles), BorderLayout.CENTER);
 
-		frame.setVisible(true);
+        tabbedPane.addTab("Clases Apuntadas", panelApuntado);
+        tabbedPane.addTab("Clases Disponibles", panelDisponibles);
+
+        frame.add(tabbedPane, BorderLayout.CENTER);
+
+        modeloLista = new DefaultListModel<>();
+        listaActividades = new JList<>(modeloLista);
+        listaActividades.setBackground(new Color(240, 240, 240));
+        JScrollPane scrollLista = new JScrollPane(listaActividades);
+        frame.add(scrollLista, BorderLayout.EAST);
+
+        listaActividades.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int index = listaActividades.locationToIndex(evt.getPoint());
+                String entrenamientoSeleccionado = modeloLista.getElementAt(index);
+                mostrarDialogoReservaExitosa(entrenamientoSeleccionado);
+            }
+        });
+
+        frame.setVisible(true);
+    
 	}
 
 	public JTable crearTablaClasesApuntadas() {
@@ -130,14 +145,12 @@ public class VentanaUsuario {
 
 		return tabla;
 	}
-	
-	public JTable getTablaClasesApuntadas() {
-	    return tablaSemanasApuntado;
-	}
-	
-	
 
-	public JTable crearTablaClasesDisponibles() {
+	public JTable getTablaClasesApuntadas() {
+		return tablaSemanasApuntado;
+	}
+
+	public JTable crearTablaClasesDisponibles(String[][] horario) {
 		JTable tabla = new JTable() {
 			@Override
 			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
@@ -150,43 +163,41 @@ public class VentanaUsuario {
 			}
 		};
 
-	    DefaultTableModel modeloTabla = new DefaultTableModel(0, 7) {
-	        @Override
-	        public boolean isCellEditable(int row, int column) {
-	            // Solo permite la edición de celdas que no están en la primera fila
-	            return row > 0;
-	        }
-	    };
+		tabla.getTableHeader().setReorderingAllowed(false);
 
-	    modeloTabla.setColumnIdentifiers(
-	            new Object[]{"Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"});
+		tabla.setGridColor(Color.BLACK);
+		tabla.setShowGrid(true);
+		tabla.setCellSelectionEnabled(true);
 
-	    try (BufferedReader br = new BufferedReader(new FileReader("Horario2023.csv"))) {
-	        String line;
-	        while ((line = br.readLine()) != null) {
-	            StringTokenizer tokenizer = new StringTokenizer(line, ",");
-	            String hora = tokenizer.nextToken();
-	            String[] clases = new String[7];
+		DefaultTableModel modeloTabla = new DefaultTableModel(0, 7) {
 
-	            for (int i = 0; i < clases.length && tokenizer.hasMoreTokens(); i++) {
-	                clases[i] = tokenizer.nextToken();
-	            }
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				// Solo permite la edición de celdas que no están en la primera fila
+				return row > 0;
+			}
+		};
 
-	            modeloTabla.addRow(new Object[]{hora, clases[0], clases[1], clases[2], clases[3], clases[4],
-	                    clases[5], clases[6]});
-	        }
-	    } catch (IOException e) {
-	        e.printStackTrace();
-	    }
+		modeloTabla.setColumnIdentifiers(
+				new Object[] { "Hora", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo" });
 
-	    tabla.setModel(modeloTabla);
+		// Crear una instancia de DeustoGym
+		DeustoGym deustoGym = this.deustoGym;
 
-	    tabla.getTableHeader().setReorderingAllowed(false);
-	    tabla.setTableHeader(null);
+		// Llamar al método cargarHorarioDesdeCSV con la instancia de DeustoGym
+		deustoGym.cargarHorarioDesdeCSV(modeloTabla, horario);
 
-	    tabla.setGridColor(Color.BLACK);
-	    tabla.setShowGrid(true);
-	    tabla.setCellSelectionEnabled(true);
+		tabla.setModel(modeloTabla);
+
+		tabla.getTableHeader().setReorderingAllowed(false);
+		JTableHeader tableHeader = tabla.getTableHeader();
+		if (tableHeader != null) {
+			tableHeader.setReorderingAllowed(false);
+		}
+
+		tabla.setGridColor(Color.BLACK);
+		tabla.setShowGrid(true);
+		tabla.setCellSelectionEnabled(true);
 
 		DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
 			@Override
@@ -257,53 +268,48 @@ public class VentanaUsuario {
 			}
 		};
 
-	    for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
-	        tabla.getColumnModel().getColumn(i).setCellRenderer(renderer);
-	    }
-
-	    tabla.addMouseListener(new java.awt.event.MouseAdapter() {
-
-	@Override
-	public void mouseClicked(java.awt.event.MouseEvent evt) {
-		int row = tabla.rowAtPoint(evt.getPoint());
-		int col = tabla.columnAtPoint(evt.getPoint());
-
-		if (row > 0 && col > 0) {
-			String claseSeleccionada = (String) modeloTabla.getValueAt(row, col);
-			if (claseSeleccionada != null) {
-				mostrarDialogoApuntarse(claseSeleccionada, modeloTabla, row, col);
-			}
+		for (int i = 0; i < modeloTabla.getColumnCount(); i++) {
+			tabla.getColumnModel().getColumn(i).setCellRenderer(renderer);
 		}
+
+		tabla.addMouseListener(new java.awt.event.MouseAdapter() {
+
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent evt) {
+				int row = tabla.rowAtPoint(evt.getPoint());
+				int col = tabla.columnAtPoint(evt.getPoint());
+
+				if (row > 0 && col > 0) {
+					String claseSeleccionada = (String) modeloTabla.getValueAt(row, col);
+					if (claseSeleccionada != null) {
+						mostrarDialogoApuntarse(claseSeleccionada, modeloTabla, row, col);
+					}
+				}
+			}
+		});
+
+		return tabla;
 	}
 
-	});
-
-	return tabla;
-	}
-	
 	public JTable getTablaClasesDisponibles() {
-	    return tablaSemanasDisponibles;
+		return tablaSemanasDisponibles;
 	}
-	
-
 
 	public void agregarClaseAClasesApuntadas(String claseSeleccionada, int row, int col) {
-	    String hora = (String) tablaSemanasDisponibles.getValueAt(row, 0);
-	    String dia = tablaSemanasDisponibles.getColumnName(col);
+		String hora = (String) tablaSemanasDisponibles.getValueAt(row, 0);
+		String dia = tablaSemanasDisponibles.getColumnName(col);
 
-	    int filaDisponibles = obtenerFilaHora(hora);
+		int filaDisponibles = obtenerFilaHora(hora);
 
-	    if (tablaSemanasApuntado.getValueAt(filaDisponibles, col) != null) {
-	        String claseDesapuntada = (String) tablaSemanasApuntado.getValueAt(filaDisponibles, col);
-	        mostrarDialogoDesapuntarse(claseDesapuntada, (DefaultTableModel) tablaSemanasApuntado.getModel(),
-	                filaDisponibles, col);
-	    }
+		if (tablaSemanasApuntado.getValueAt(filaDisponibles, col) != null) {
+			String claseDesapuntada = (String) tablaSemanasApuntado.getValueAt(filaDisponibles, col);
+			mostrarDialogoDesapuntarse(claseDesapuntada, (DefaultTableModel) tablaSemanasApuntado.getModel(),
+					filaDisponibles, col);
+		}
 
-	    modeloLista.addElement(claseSeleccionada);
-	    tablaSemanasApuntado.setValueAt(claseSeleccionada, filaDisponibles, col);
+		modeloLista.addElement(claseSeleccionada);
+		tablaSemanasApuntado.setValueAt(claseSeleccionada, filaDisponibles, col);
 	}
-
-
 
 	public void mostrarDialogoApuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
 		String hora = (String) modeloTabla.getValueAt(row, 0);
@@ -385,9 +391,9 @@ public class VentanaUsuario {
 	}
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(() -> {
-			VentanaUsuario ventanaUsuario = new VentanaUsuario("UsuarioPrueba");
-			ventanaUsuario.mostrarVentana();
-		});
-	}
+        SwingUtilities.invokeLater(() -> {
+            VentanaUsuario ventanaUsuario = new VentanaUsuario("UsuarioPrueba");
+            ventanaUsuario.mostrarVentana();
+        });
+    }
 }

@@ -2,12 +2,16 @@ package UI;
 
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import DeustoGym.GestorUsuariosBD;
+import DeustoGym.Usuario;
 
 public class VentanaRegistro {
     private JFrame frame;
+    private GestorUsuariosBD gestorBD;
 
     public VentanaRegistro() {
         frame = new JFrame("Ventana de Registro");
@@ -15,6 +19,9 @@ public class VentanaRegistro {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.BLACK);
         frame.setLayout(new BorderLayout());
+        
+        gestorBD = new GestorUsuariosBD();
+        
 
         // Panel principal con GroupLayout
         JPanel panelRegistro = new JPanel();
@@ -23,11 +30,14 @@ public class VentanaRegistro {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-        // Componentes de registro
         JLabel nombreLabel = new JLabel("Nombre:");
         JTextField nombreTextField = new JTextField();
         JLabel apellidoLabel = new JLabel("Apellido:");
         JTextField apellidoTextField = new JTextField();
+
+        JLabel edadLabel = new JLabel("Edad:");
+        JTextField  edadTextField = new JTextField();
+
         JLabel usuarioLabel = new JLabel("Nombre de Usuario:");
         JTextField usuarioTextField = new JTextField();
         JLabel contraseñaLabel = new JLabel("Contraseña:");
@@ -37,24 +47,35 @@ public class VentanaRegistro {
         registrarmeButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String nombre = nombreTextField.getText();
+                String apellido = apellidoTextField.getText();
+                String edad = edadTextField.getText();
+                String usuario = usuarioTextField.getText();
+                String contraseña = new String(contraseñaPasswordField.getPassword());
+                Usuario nuevoUsuario = new Usuario(nombre, apellido, Integer.parseInt(edad), contraseña, usuario);
+
+                gestorBD.agregarUsuario(nuevoUsuario);
+
                 JOptionPane.showMessageDialog(frame, "Ha sido registrado de manera correcta");
                 VentanaInicioSesionUsuario ventanaInicioSesionUsuario = new VentanaInicioSesionUsuario();
                 ventanaInicioSesionUsuario.mostrarVentana();
                 frame.dispose();
             }
         });
-
-        // Configuración del GroupLayout
+        
+        
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                         .addComponent(nombreLabel)
                         .addComponent(apellidoLabel)
+                        .addComponent(edadLabel)  
                         .addComponent(usuarioLabel)
                         .addComponent(contraseñaLabel)
                         .addComponent(registrarmeButton))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(nombreTextField)
                         .addComponent(apellidoTextField)
+                        .addComponent(edadTextField)  
                         .addComponent(usuarioTextField)
                         .addComponent(contraseñaPasswordField)));
 
@@ -65,6 +86,9 @@ public class VentanaRegistro {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(apellidoLabel)
                         .addComponent(apellidoTextField))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                        .addComponent(edadLabel)
+                        .addComponent(edadTextField))  
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(usuarioLabel)
                         .addComponent(usuarioTextField))

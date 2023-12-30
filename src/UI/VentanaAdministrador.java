@@ -215,6 +215,8 @@ public class VentanaAdministrador {
 
 		actualizarLabelGanancias();
 	}
+	
+	
 
 	public String obtenerProfesorDeClase(String clase) {
 

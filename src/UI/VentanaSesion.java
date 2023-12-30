@@ -38,7 +38,7 @@ public class VentanaSesion {
             public void actionPerformed(ActionEvent e) {
                 VentanaInicioSesionUsuario ventanaInicioSesionUsuario = new VentanaInicioSesionUsuario();
                 ventanaInicioSesionUsuario.mostrarVentana();
-                frame.dispose(); // Cerrar la ventana actual
+                frame.dispose(); 
             }
         });
         panelBotones.add(iniciarSesionUsuarioButton);

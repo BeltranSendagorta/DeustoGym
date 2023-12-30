@@ -66,6 +66,11 @@ public class Usuario {
 		System.out.println("ID: " + id);
 	}
 
+	public int calcularEdad() {
+	    return 2023 - edad;
+	}
+	
+	
 	// Encriptacion de manera Caesar cipher
 	// Se sustituye la letra actual por una 3 posicion en adelante
 	private String encriptContrasenia(String contraseña) {

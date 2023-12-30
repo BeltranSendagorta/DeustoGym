@@ -63,6 +63,7 @@ public class VentanaAdministrador {
 					}
 				}
 			}
+			
 		});
 
 		frame.setVisible(true);

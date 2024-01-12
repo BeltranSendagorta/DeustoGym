@@ -149,6 +149,9 @@ public class VentanaMonitor {
 				TableColumn tableColumn = getColumnModel().getColumn(column);
 				tableColumn.setPreferredWidth(100);
 				setRowHeight(25);
+				if (column >= getColumnCount() - 2 && row >= 6) {
+		                comp.setBackground(Color.RED);
+		            }
 				return comp;
 			}
 		};

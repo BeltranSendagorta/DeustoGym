@@ -18,6 +18,7 @@ public class VentanaAdministrador {
 	private DefaultListModel<String> modeloLista;
 	private JTable tablaSemanasApuntado;
 	public Map<String, Integer> gananciasProfesores;
+	private Map<String, String> asignacionMonitores;
 
 	public VentanaAdministrador(String nombreAdministrador) {
 		frame = new JFrame("Ventana de Administrador");
@@ -69,6 +70,22 @@ public class VentanaAdministrador {
         frame.add(panelSuperior, BorderLayout.NORTH);
         frame.add(panelCentral, BorderLayout.CENTER);
         frame.add(panelInferior, BorderLayout.SOUTH);
+        
+     // Crear botón para asignar monitor
+        JButton asignarMonitorButton = new JButton("Asignar Monitor");
+        
+        // Agregar listener al botón de asignar monitor
+        asignarMonitorButton.addActionListener(e -> mostrarDialogoAsignarMonitor());
+
+        // ... (código existente)
+
+        // Agregar botón de asignar monitor al panel de botones
+        panelBotones.add(asignarMonitorButton);
+
+        // ... (código existente)
+
+        // Inicializar el mapa de asignación de monitores
+        asignacionMonitores = new HashMap<>();
 
         gananciasProfesores = new HashMap<>();
         calcularGananciasIniciales();
@@ -342,7 +359,7 @@ public class VentanaAdministrador {
         return null;
     }
 	
-	 private void inscribirAlumno(String claseSeleccionada, String nombreAlumno) {
+	 	private void inscribirAlumno(String claseSeleccionada, String nombreAlumno) {
 	        // Aquí puedes implementar la lógica para inscribir al alumno en la clase seleccionada.
 	        // Puedes actualizar la tabla, el modelo de lista, etc.
 
@@ -356,6 +373,35 @@ public class VentanaAdministrador {
 	        JOptionPane.showMessageDialog(frame, "Alumno " + nombreAlumno + " desapuntado de " + claseSeleccionada);
 	    }
 
+	    private void mostrarDialogoAsignarMonitor() {
+	        String claseSeleccionada = obtenerClaseSeleccionada();
+	        if (claseSeleccionada != null) {
+	            String monitorSeleccionado = seleccionarMonitor();
+	            if (monitorSeleccionado != null) {
+	                asignarMonitor(claseSeleccionada, monitorSeleccionado);
+	                // Actualizar la interfaz según sea necesario
+	            }
+	        }
+	    }
+
+	    private String seleccionarMonitor() {
+	        // Aquí puedes implementar la lógica para seleccionar un monitor
+	        // Puedes usar un cuadro de diálogo, una lista, etc. para permitir la selección.
+	        // Retorna el nombre del monitor seleccionado o null si se cancela la operación.
+	        return JOptionPane.showInputDialog(frame, "Seleccione un monitor para la clase:");
+	    }
+
+	    private void asignarMonitor(String clase, String monitor) {
+	        // Actualiza el mapa de asignación de monitores
+	        asignacionMonitores.put(clase, monitor);
+
+	        // Muestra un mensaje o realiza otras acciones según sea necesario
+	        JOptionPane.showMessageDialog(frame, "Monitor " + monitor + " asignado a la clase " + clase);
+
+	        // Actualiza la interfaz según sea necesario, por ejemplo, la tabla
+	        // Puedes agregar código para actualizar la tabla según la asignación de monitores
+	        // por ejemplo, puedes resaltar la clase en la tabla para indicar que tiene un monitor asignado.
+	    }
 	public void mostrarVentana() {
 		frame.setVisible(true);
 	}

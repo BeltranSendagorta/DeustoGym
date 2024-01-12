@@ -21,53 +21,76 @@ public class VentanaAdministrador {
 
 	public VentanaAdministrador(String nombreAdministrador) {
 		frame = new JFrame("Ventana de Administrador");
-		frame.setSize(800, 600);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setBackground(Color.WHITE);
-		frame.setLayout(new BorderLayout());
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setBackground(Color.WHITE);
+        frame.setLayout(new BorderLayout());
 
-		JLabel perfilLabel = new JLabel("Perfil del Administrador: " + nombreAdministrador);
-		perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
-		perfilLabel.setForeground(Color.BLACK);
-		frame.add(perfilLabel, BorderLayout.NORTH);
+        // Crear botones para inscribir y desapuntar
+        JButton inscribirButton = new JButton("Inscribir");
+        JButton desapuntarButton = new JButton("Desapuntar");
 
-		JPanel panelApuntado = new JPanel(new BorderLayout());
-		tablaSemanasApuntado = crearTabla();
-		panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
-		frame.add(panelApuntado, BorderLayout.CENTER);
+        // Agregar listeners a los botones
+        inscribirButton.addActionListener(e -> mostrarDialogoInscribir());
+        desapuntarButton.addActionListener(e -> mostrarDialogoDesapuntar());
 
-		JTextArea gananciasTextArea = new JTextArea();
-		gananciasTextArea.setEditable(false);
-		frame.add(new JScrollPane(gananciasTextArea), BorderLayout.SOUTH);
+        // Crear panel para botones
+        JPanel panelBotones = new JPanel();
+        panelBotones.add(inscribirButton);
+        panelBotones.add(desapuntarButton);
 
-		modeloLista = new DefaultListModel<>();
-		JList<String> listaActividades = new JList<>(modeloLista);
-		listaActividades.setBackground(new Color(240, 240, 240));
-		JScrollPane scrollLista = new JScrollPane(listaActividades);
-		frame.add(scrollLista, BorderLayout.EAST);
+        // Panel superior con el perfil y los botones
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        JLabel perfilLabel = new JLabel("Perfil del Administrador: " + nombreAdministrador);
+        perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
+        perfilLabel.setForeground(Color.BLACK);
+        panelSuperior.add(perfilLabel, BorderLayout.NORTH);
+        panelSuperior.add(panelBotones, BorderLayout.SOUTH);
 
-		gananciasProfesores = new HashMap<>();
-		calcularGananciasIniciales();
+        // Panel central con la tabla
+        JPanel panelCentral = new JPanel(new BorderLayout());
+        tablaSemanasApuntado = crearTabla();
+        panelCentral.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
 
-		tablaSemanasApuntado.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent evt) {
-				int row = tablaSemanasApuntado.rowAtPoint(evt.getPoint());
-				int col = tablaSemanasApuntado.columnAtPoint(evt.getPoint());
+        // Panel inferior con las ganancias
+        JPanel panelInferior = new JPanel(new BorderLayout());
+        JTextArea gananciasTextArea = new JTextArea();
+        gananciasTextArea.setEditable(false);
+        panelInferior.add(new JScrollPane(gananciasTextArea), BorderLayout.CENTER);
 
-				if (row >= 0 && col > 0) {
-					Object cellValue = tablaSemanasApuntado.getValueAt(row, col);
-					if (cellValue != null) {
-						String claseSeleccionada = cellValue.toString();
-						mostrarDialogoClase(claseSeleccionada);
-					}
-				}
-			}
-			
-		});
+        // Panel lateral con la lista de actividades
+        modeloLista = new DefaultListModel<>();
+        JList<String> listaActividades = new JList<>(modeloLista);
+        listaActividades.setBackground(new Color(240, 240, 240));
+        JScrollPane scrollLista = new JScrollPane(listaActividades);
+        panelInferior.add(scrollLista, BorderLayout.EAST);
 
-		frame.setVisible(true);
-	}
+        // Agregar paneles al frame
+        frame.add(panelSuperior, BorderLayout.NORTH);
+        frame.add(panelCentral, BorderLayout.CENTER);
+        frame.add(panelInferior, BorderLayout.SOUTH);
+
+        gananciasProfesores = new HashMap<>();
+        calcularGananciasIniciales();
+
+        tablaSemanasApuntado.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                int row = tablaSemanasApuntado.rowAtPoint(evt.getPoint());
+                int col = tablaSemanasApuntado.columnAtPoint(evt.getPoint());
+
+                if (row >= 0 && col > 0) {
+                    Object cellValue = tablaSemanasApuntado.getValueAt(row, col);
+                    if (cellValue != null) {
+                        String claseSeleccionada = cellValue.toString();
+                        mostrarDialogoClase(claseSeleccionada);
+                    }
+                }
+            }
+        });
+
+        frame.setVisible(true);
+    }
 
 	public JTable crearTabla() {
 		JTable tabla = new JTable() {
@@ -284,6 +307,54 @@ public class VentanaAdministrador {
 		}
 		return usuarios.toString();
 	}
+	
+	private void mostrarDialogoInscribir() {
+        String claseSeleccionada = obtenerClaseSeleccionada();
+        if (claseSeleccionada != null) {
+            String nombreAlumno = JOptionPane.showInputDialog(frame, "Ingrese el nombre del alumno:");
+            if (nombreAlumno != null && !nombreAlumno.isEmpty()) {
+                inscribirAlumno(claseSeleccionada, nombreAlumno);
+            }
+        }
+    }
+	
+	private void mostrarDialogoDesapuntar() {
+        String claseSeleccionada = obtenerClaseSeleccionada();
+        if (claseSeleccionada != null) {
+            String nombreAlumno = JOptionPane.showInputDialog(frame, "Ingrese el nombre del alumno a desapuntar:");
+            if (nombreAlumno != null && !nombreAlumno.isEmpty()) {
+                desapuntarAlumno(claseSeleccionada, nombreAlumno);
+            }
+        }
+    }
+	
+	private String obtenerClaseSeleccionada() {
+        int row = tablaSemanasApuntado.getSelectedRow();
+        int col = tablaSemanasApuntado.getSelectedColumn();
+
+        if (row >= 0 && col > 0) {
+            Object cellValue = tablaSemanasApuntado.getValueAt(row, col);
+            if (cellValue != null) {
+                return cellValue.toString();
+            }
+        }
+
+        return null;
+    }
+	
+	 private void inscribirAlumno(String claseSeleccionada, String nombreAlumno) {
+	        // Aquí puedes implementar la lógica para inscribir al alumno en la clase seleccionada.
+	        // Puedes actualizar la tabla, el modelo de lista, etc.
+
+	        JOptionPane.showMessageDialog(frame, "Alumno " + nombreAlumno + " inscrito en " + claseSeleccionada);
+	    }
+
+	    private void desapuntarAlumno(String claseSeleccionada, String nombreAlumno) {
+	        // Aquí puedes implementar la lógica para desapuntar al alumno de la clase seleccionada.
+	        // Puedes actualizar la tabla, el modelo de lista, etc.
+
+	        JOptionPane.showMessageDialog(frame, "Alumno " + nombreAlumno + " desapuntado de " + claseSeleccionada);
+	    }
 
 	public void mostrarVentana() {
 		frame.setVisible(true);

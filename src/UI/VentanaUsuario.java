@@ -18,18 +18,22 @@ public class VentanaUsuario {
     private JTable tablaSemanasDisponibles;
     private DeustoGym deustoGym;
     private TablaClasesDisponibles tablaClasesDisponibles;
+    private JPanel panelDescripcion;
 
+    /**
+     * @wbp.parser.entryPoint
+     */
     public VentanaUsuario(String nombreUsuario) {
         frame = new JFrame("Ventana de Usuario");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.WHITE);
-        frame.setLayout(new BorderLayout());
+        frame.getContentPane().setLayout(new BorderLayout());
 
         JLabel perfilLabel = new JLabel("Perfil del Usuario: " + nombreUsuario);
         perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
         perfilLabel.setForeground(Color.BLACK);
-        frame.add(perfilLabel, BorderLayout.NORTH);
+        frame.getContentPane().add(perfilLabel, BorderLayout.NORTH);
 
         JTabbedPane tabbedPane = new JTabbedPane();
 
@@ -45,13 +49,28 @@ public class VentanaUsuario {
         tabbedPane.addTab("Clases Apuntadas", panelApuntado);
         tabbedPane.addTab("Clases Disponibles", panelDisponibles);
 
-        frame.add(tabbedPane, BorderLayout.CENTER);
+        frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
+        
+     // Crear un nuevo panel para la descripción de clases
+        panelDescripcion = new JPanel(new GridLayout(0, 2));
+        frame.getContentPane().add(panelDescripcion, BorderLayout.SOUTH);
+
+        // Agregar descripciones para cada clase
+        agregarDescripcionClase("Spinning", "Entrenamiento cardiovascular en bicicleta estática.");
+        agregarDescripcionClase("Yoga", "Ejercicios de flexibilidad y relajación mental.");
+        agregarDescripcionClase("Core", "Fortalecimiento de los músculos del abdomen y la espalda.");
+        agregarDescripcionClase("Boxeo", "Entrenamiento basado en movimientos de boxeo para mejorar la resistencia y fuerza.");
+        agregarDescripcionClase("AeroYoga", "Combinación de yoga y ejercicios acrobáticos en tela.");
+        agregarDescripcionClase("Pilates", "Fortalecimiento del núcleo y mejora de la postura.");
+        agregarDescripcionClase("HIIT", "Entrenamiento de intervalos de alta intensidad para mejorar la condición física.");
+        agregarDescripcionClase("Funcional", "Ejercicios que imitan movimientos del día a día para mejorar la funcionalidad del cuerpo.");
+
 
         modeloLista = new DefaultListModel<>();
         listaActividades = new JList<>(modeloLista);
         listaActividades.setBackground(new Color(240, 240, 240));
         JScrollPane scrollLista = new JScrollPane(listaActividades);
-        frame.add(scrollLista, BorderLayout.EAST);
+        frame.getContentPane().add(scrollLista, BorderLayout.EAST);
 
         listaActividades.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -79,6 +98,7 @@ public class VentanaUsuario {
         });
 
         frame.setVisible(true);
+        
     } 
 
 	public JTable crearTablaClasesApuntadas() {
@@ -176,6 +196,9 @@ public class VentanaUsuario {
 		}
 	}
 
+	/**
+	 * @wbp.parser.entryPoint
+	 */
 	public void mostrarDialogoDesapuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
 		String[] opciones = { "Sí", "No" };
 
@@ -223,6 +246,11 @@ public class VentanaUsuario {
 		}
 		return -1;
 	}
+	
+	private void agregarDescripcionClase(String nombreClase, String descripcion) {
+        JLabel labelDescripcionClase = new JLabel(nombreClase + ": " + descripcion);
+        panelDescripcion.add(labelDescripcionClase);
+    }
 
 	public void mostrarDialogoReservaExitosa(String entrenamientoSeleccionado) {
 		JOptionPane.showMessageDialog(frame,

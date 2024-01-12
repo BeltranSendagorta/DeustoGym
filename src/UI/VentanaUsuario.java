@@ -19,6 +19,9 @@ public class VentanaUsuario {
     private DeustoGym deustoGym;
     private TablaClasesDisponibles tablaClasesDisponibles;
     private JPanel panelDescripcion;
+    private JPanel panelInformacionPerfil;
+    private JPanel panelSuperior;
+    private JPanel panelIzquierdo;
 
     /**
      * @wbp.parser.entryPoint
@@ -51,9 +54,27 @@ public class VentanaUsuario {
 
         frame.getContentPane().add(tabbedPane, BorderLayout.CENTER);
         
+        JPanel panelSuperior = new JPanel(new BorderLayout());
+        frame.getContentPane().add(panelSuperior, BorderLayout.NORTH);
+
+     // Dentro del constructor de VentanaUsuario, después de crear panelSuperior
+        JButton btnAñadirInformacionPerfil = new JButton("Añadir Información de Perfil");
+        panelSuperior.add(btnAñadirInformacionPerfil);
+
+        btnAñadirInformacionPerfil.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mostrarDialogoAñadirInformacionPerfil();
+            }
+        });
+        
+        panelIzquierdo = new JPanel(new GridLayout(4, 2)); // 4 filas, 2 columnas
+        frame.getContentPane().add(panelIzquierdo, BorderLayout.WEST);
+        
      // Crear un nuevo panel para la descripción de clases
         panelDescripcion = new JPanel(new GridLayout(0, 2));
         frame.getContentPane().add(panelDescripcion, BorderLayout.SOUTH);
+
 
         // Agregar descripciones para cada clase
         agregarDescripcionClase("Spinning", "Entrenamiento cardiovascular en bicicleta estática.");
@@ -256,6 +277,35 @@ public class VentanaUsuario {
 		JOptionPane.showMessageDialog(frame,
 				"Tu reserva de " + entrenamientoSeleccionado + " se ha realizado con éxito.");
 	}
+	
+	
+	
+	private void mostrarDialogoAñadirInformacionPerfil() {
+        // Obtener la información del usuario desde los campos de texto
+        String nombre = JOptionPane.showInputDialog(frame, "Ingrese su nombre:");
+        String apellidos = JOptionPane.showInputDialog(frame, "Ingrese sus apellidos:");
+        String fechaNacimiento = JOptionPane.showInputDialog(frame, "Ingrese su fecha de nacimiento:");
+        String anios = JOptionPane.showInputDialog(frame, "Ingrese su edad:");
+
+        // Mostrar la información en el panelIzquierdo
+        JLabel labelNombre = new JLabel("Nombre: " + nombre);
+        JLabel labelApellidos = new JLabel("Apellidos: " + apellidos);
+        JLabel labelFechaNacimiento = new JLabel("Fecha de Nacimiento: " + fechaNacimiento);
+        JLabel labelAnios = new JLabel("Años: " + anios);
+
+        // Borrar cualquier componente anterior en el panelIzquierdo
+        panelIzquierdo.removeAll();
+
+        // Agregar las etiquetas actualizadas al panelIzquierdo
+        panelIzquierdo.add(labelNombre);
+        panelIzquierdo.add(labelApellidos);
+        panelIzquierdo.add(labelFechaNacimiento);
+        panelIzquierdo.add(labelAnios);
+
+        // Actualizar la interfaz gráfica
+        frame.revalidate();
+        frame.repaint();
+    }
 
 	public void mostrarVentana() {
 		frame.setVisible(true);

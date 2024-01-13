@@ -11,7 +11,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,9 +148,6 @@ public class VentanaMonitor {
 				TableColumn tableColumn = getColumnModel().getColumn(column);
 				tableColumn.setPreferredWidth(100);
 				setRowHeight(25);
-				if (column >= getColumnCount() - 2 && row >= 6) {
-		                comp.setBackground(Color.RED);
-		            }
 				return comp;
 			}
 		};
@@ -356,66 +352,28 @@ public class VentanaMonitor {
 	    }
 	}
     private void mostrarDialogoDesapuntarse(String claseSeleccionada, DefaultTableModel modeloTabla, int row, int col) {
-        String[] opciones = { "Sí", "No" };
-        int seleccion = JOptionPane.showOptionDialog(frame,
-                "¿Quieres desapuntarte de la clase de " + claseSeleccionada + "?", "Desapuntarse de Clase",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+		String[] opciones = { "Sí", "No" };
+		int seleccion = JOptionPane.showOptionDialog(frame,
+				"¿Quieres desapuntarte de la clase de " + claseSeleccionada + "?", "Desapuntarse de Clase",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
 
-        if (seleccion == JOptionPane.YES_OPTION) {
-            JTextField txtNombre = new JTextField();
-            JTextField txtApellido = new JTextField();
-            JTextField txtID = new JTextField();
-            JTextField txtRellenador = new JTextField();
-            JComboBox<String> comboBoxCausa = new JComboBox<>(new String[]{"Enfermedad", "Familiar", "Otra"});
-            JTextArea txtResumen = new JTextArea();
+		if (seleccion == JOptionPane.YES_OPTION) {
 
-            Object[] message = {
-                    "Nombre:", txtNombre,
-                    "Apellido:", txtApellido,
-                    "ID:", txtID,
-                    "Rellenador:", txtRellenador,
-                    "Causa:", comboBoxCausa,
-                    "Resumen:", new JScrollPane(txtResumen)
-            };
+			String hora = (String) modeloTabla.getValueAt(row, 0);
+			String dia = modeloTabla.getColumnName(col);
 
-            int option = JOptionPane.showConfirmDialog(frame, message, "Desapuntarse de Clase: " + claseSeleccionada, JOptionPane.OK_CANCEL_OPTION);
+			modeloLista.removeElement(claseSeleccionada);
+			modeloTabla.setValueAt(null, row, col);
 
-            if (option == JOptionPane.OK_OPTION) {
-                // Guardar la información en un archivo TXT
-                String nombreArchivo = claseSeleccionada + "_Desapuntarse.txt";
-                String contenidoArchivo = "Nombre: " + txtNombre.getText() + "\n" +
-                        "Apellido: " + txtApellido.getText() + "\n" +
-                        "ID: " + txtID.getText() + "\n" +
-                        "Rellenador: " + txtRellenador.getText() + "\n" +
-                        "Causa: " + comboBoxCausa.getSelectedItem() + "\n" +
-                        "Resumen: " + txtResumen.getText();
+			int filaDisponibles = obtenerFilaHora(hora);
 
-                try (FileWriter writer = new FileWriter(nombreArchivo)) {
-                    writer.write(contenidoArchivo);
-                    JOptionPane.showMessageDialog(frame, "Información guardada correctamente en " + nombreArchivo);
+			int colDisponibles = obtenerIndiceColumna(dia, (DefaultTableModel) tablaSemanasDisponibles.getModel());
 
-                    // Resto del código original
-                    String hora = (String) modeloTabla.getValueAt(row, 0);
-                    String dia = modeloTabla.getColumnName(col);
+			tablaSemanasDisponibles.setValueAt(claseSeleccionada, filaDisponibles, colDisponibles);
 
-                    modeloLista.removeElement(claseSeleccionada);
-                    modeloTabla.setValueAt(null, row, col);
-
-                    int filaDisponibles = obtenerFilaHora(hora);
-                    int colDisponibles = obtenerIndiceColumna(dia, (DefaultTableModel) tablaSemanasDisponibles.getModel());
-
-                    tablaSemanasDisponibles.setValueAt(claseSeleccionada, filaDisponibles, colDisponibles);
-
-                    JOptionPane.showMessageDialog(frame, "Te has desapuntado de la clase de " + claseSeleccionada);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(frame, "Error al guardar la información", "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        }
-    }
-
+			JOptionPane.showMessageDialog(frame, "Te has desapuntado de la clase de " + claseSeleccionada);
+		}
+	}
     
     public int obtenerFilaHora(String hora) {
         DefaultTableModel modelo = (DefaultTableModel) tablaSemanasApuntado.getModel();

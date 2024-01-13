@@ -18,96 +18,55 @@ public class VentanaAdministrador {
 	private DefaultListModel<String> modeloLista;
 	private JTable tablaSemanasApuntado;
 	public Map<String, Integer> gananciasProfesores;
-	private Map<String, String> asignacionMonitores;
 
 	public VentanaAdministrador(String nombreAdministrador) {
 		frame = new JFrame("Ventana de Administrador");
-        frame.setSize(800, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().setBackground(Color.WHITE);
-        frame.setLayout(new BorderLayout());
+		frame.setSize(800, 600);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setBackground(Color.WHITE);
+		frame.setLayout(new BorderLayout());
 
-        // Crear botones para inscribir y desapuntar
-        JButton inscribirButton = new JButton("Inscribir");
-        JButton desapuntarButton = new JButton("Desapuntar");
+		JLabel perfilLabel = new JLabel("Perfil del Administrador: " + nombreAdministrador);
+		perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
+		perfilLabel.setForeground(Color.BLACK);
+		frame.add(perfilLabel, BorderLayout.NORTH);
 
-        // Agregar listeners a los botones
-        inscribirButton.addActionListener(e -> mostrarDialogoInscribir());
-        desapuntarButton.addActionListener(e -> mostrarDialogoDesapuntar());
+		JPanel panelApuntado = new JPanel(new BorderLayout());
+		tablaSemanasApuntado = crearTabla();
+		panelApuntado.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
+		frame.add(panelApuntado, BorderLayout.CENTER);
 
-        // Crear panel para botones
-        JPanel panelBotones = new JPanel();
-        panelBotones.add(inscribirButton);
-        panelBotones.add(desapuntarButton);
+		JTextArea gananciasTextArea = new JTextArea();
+		gananciasTextArea.setEditable(false);
+		frame.add(new JScrollPane(gananciasTextArea), BorderLayout.SOUTH);
 
-        // Panel superior con el perfil y los botones
-        JPanel panelSuperior = new JPanel(new BorderLayout());
-        JLabel perfilLabel = new JLabel("Perfil del Administrador: " + nombreAdministrador);
-        perfilLabel.setHorizontalAlignment(JLabel.RIGHT);
-        perfilLabel.setForeground(Color.BLACK);
-        panelSuperior.add(perfilLabel, BorderLayout.NORTH);
-        panelSuperior.add(panelBotones, BorderLayout.SOUTH);
+		modeloLista = new DefaultListModel<>();
+		JList<String> listaActividades = new JList<>(modeloLista);
+		listaActividades.setBackground(new Color(240, 240, 240));
+		JScrollPane scrollLista = new JScrollPane(listaActividades);
+		frame.add(scrollLista, BorderLayout.EAST);
 
-        // Panel central con la tabla
-        JPanel panelCentral = new JPanel(new BorderLayout());
-        tablaSemanasApuntado = crearTabla();
-        panelCentral.add(new JScrollPane(tablaSemanasApuntado), BorderLayout.CENTER);
+		gananciasProfesores = new HashMap<>();
+		calcularGananciasIniciales();
 
-        // Panel inferior con las ganancias
-        JPanel panelInferior = new JPanel(new BorderLayout());
-        JTextArea gananciasTextArea = new JTextArea();
-        gananciasTextArea.setEditable(false);
-        panelInferior.add(new JScrollPane(gananciasTextArea), BorderLayout.CENTER);
+		tablaSemanasApuntado.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent evt) {
+				int row = tablaSemanasApuntado.rowAtPoint(evt.getPoint());
+				int col = tablaSemanasApuntado.columnAtPoint(evt.getPoint());
 
-        // Panel lateral con la lista de actividades
-        modeloLista = new DefaultListModel<>();
-        JList<String> listaActividades = new JList<>(modeloLista);
-        listaActividades.setBackground(new Color(240, 240, 240));
-        JScrollPane scrollLista = new JScrollPane(listaActividades);
-        panelInferior.add(scrollLista, BorderLayout.EAST);
+				if (row >= 0 && col > 0) {
+					Object cellValue = tablaSemanasApuntado.getValueAt(row, col);
+					if (cellValue != null) {
+						String claseSeleccionada = cellValue.toString();
+						mostrarDialogoClase(claseSeleccionada);
+					}
+				}
+			}
+		});
 
-        // Agregar paneles al frame
-        frame.add(panelSuperior, BorderLayout.NORTH);
-        frame.add(panelCentral, BorderLayout.CENTER);
-        frame.add(panelInferior, BorderLayout.SOUTH);
-        
-     // Crear botón para asignar monitor
-        JButton asignarMonitorButton = new JButton("Asignar Monitor");
-        
-        // Agregar listener al botón de asignar monitor
-        asignarMonitorButton.addActionListener(e -> mostrarDialogoAsignarMonitor());
-
-        // ... (código existente)
-
-        // Agregar botón de asignar monitor al panel de botones
-        panelBotones.add(asignarMonitorButton);
-
-        // ... (código existente)
-
-        // Inicializar el mapa de asignación de monitores
-        asignacionMonitores = new HashMap<>();
-
-        gananciasProfesores = new HashMap<>();
-        calcularGananciasIniciales();
-
-        tablaSemanasApuntado.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                int row = tablaSemanasApuntado.rowAtPoint(evt.getPoint());
-                int col = tablaSemanasApuntado.columnAtPoint(evt.getPoint());
-
-                if (row >= 0 && col > 0) {
-                    Object cellValue = tablaSemanasApuntado.getValueAt(row, col);
-                    if (cellValue != null) {
-                        String claseSeleccionada = cellValue.toString();
-                        mostrarDialogoClase(claseSeleccionada);
-                    }
-                }
-            }
-        });
-
-        frame.setVisible(true);
-    }
+		frame.setVisible(true);
+	}
 
 	public JTable crearTabla() {
 		JTable tabla = new JTable() {
@@ -118,10 +77,6 @@ public class VentanaAdministrador {
 				TableColumn tableColumn = getColumnModel().getColumn(column);
 				tableColumn.setPreferredWidth(100);
 				setRowHeight(25);
-				
-				 if (column >= getColumnCount() - 2 && row >= 7) {
-		                comp.setBackground(Color.RED);
-		            }
 				return comp;
 			}
 		};
@@ -260,8 +215,6 @@ public class VentanaAdministrador {
 
 		actualizarLabelGanancias();
 	}
-	
-	
 
 	public String obtenerProfesorDeClase(String clase) {
 
@@ -328,84 +281,7 @@ public class VentanaAdministrador {
 		}
 		return usuarios.toString();
 	}
-	
-	private void mostrarDialogoInscribir() {
-        String claseSeleccionada = obtenerClaseSeleccionada();
-        if (claseSeleccionada != null) {
-            String nombreAlumno = JOptionPane.showInputDialog(frame, "Ingrese el nombre del alumno:");
-            if (nombreAlumno != null && !nombreAlumno.isEmpty()) {
-                inscribirAlumno(claseSeleccionada, nombreAlumno);
-            }
-        }
-    }
-	
-	private void mostrarDialogoDesapuntar() {
-        String claseSeleccionada = obtenerClaseSeleccionada();
-        if (claseSeleccionada != null) {
-            String nombreAlumno = JOptionPane.showInputDialog(frame, "Ingrese el nombre del alumno a desapuntar:");
-            if (nombreAlumno != null && !nombreAlumno.isEmpty()) {
-                desapuntarAlumno(claseSeleccionada, nombreAlumno);
-            }
-        }
-    }
-	
-	private String obtenerClaseSeleccionada() {
-        int row = tablaSemanasApuntado.getSelectedRow();
-        int col = tablaSemanasApuntado.getSelectedColumn();
 
-        if (row >= 0 && col > 0) {
-            Object cellValue = tablaSemanasApuntado.getValueAt(row, col);
-            if (cellValue != null) {
-                return cellValue.toString();
-            }
-        }
-
-        return null;
-    }
-	
-	 	private void inscribirAlumno(String claseSeleccionada, String nombreAlumno) {
-	        // Aquí puedes implementar la lógica para inscribir al alumno en la clase seleccionada.
-	        // Puedes actualizar la tabla, el modelo de lista, etc.
-
-	        JOptionPane.showMessageDialog(frame, "Alumno " + nombreAlumno + " inscrito en " + claseSeleccionada);
-	    }
-
-	    private void desapuntarAlumno(String claseSeleccionada, String nombreAlumno) {
-	        // Aquí puedes implementar la lógica para desapuntar al alumno de la clase seleccionada.
-	        // Puedes actualizar la tabla, el modelo de lista, etc.
-
-	        JOptionPane.showMessageDialog(frame, "Alumno " + nombreAlumno + " desapuntado de " + claseSeleccionada);
-	    }
-
-	    private void mostrarDialogoAsignarMonitor() {
-	        String claseSeleccionada = obtenerClaseSeleccionada();
-	        if (claseSeleccionada != null) {
-	            String monitorSeleccionado = seleccionarMonitor();
-	            if (monitorSeleccionado != null) {
-	                asignarMonitor(claseSeleccionada, monitorSeleccionado);
-	                // Actualizar la interfaz según sea necesario
-	            }
-	        }
-	    }
-
-	    private String seleccionarMonitor() {
-	        // Aquí puedes implementar la lógica para seleccionar un monitor
-	        // Puedes usar un cuadro de diálogo, una lista, etc. para permitir la selección.
-	        // Retorna el nombre del monitor seleccionado o null si se cancela la operación.
-	        return JOptionPane.showInputDialog(frame, "Seleccione un monitor para la clase:");
-	    }
-
-	    private void asignarMonitor(String clase, String monitor) {
-	        // Actualiza el mapa de asignación de monitores
-	        asignacionMonitores.put(clase, monitor);
-
-	        // Muestra un mensaje o realiza otras acciones según sea necesario
-	        JOptionPane.showMessageDialog(frame, "Monitor " + monitor + " asignado a la clase " + clase);
-
-	        // Actualiza la interfaz según sea necesario, por ejemplo, la tabla
-	        // Puedes agregar código para actualizar la tabla según la asignación de monitores
-	        // por ejemplo, puedes resaltar la clase en la tabla para indicar que tiene un monitor asignado.
-	    }
 	public void mostrarVentana() {
 		frame.setVisible(true);
 	}

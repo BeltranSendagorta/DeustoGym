@@ -25,8 +25,8 @@ import domain.Usuario;
 public class BaseDatos {
 	private static Connection conexion;
 	private static Logger logger = Logger.getLogger( "BaseDeDatos" );
-	private static Map<String, Persona> personas = new HashMap<>();
-	private static List<Entrenamiento> listEntre = new ArrayList<>();
+	public static Map<String, Persona> personas = new HashMap<>();
+	public static List<Entrenamiento> entrenamientos = new ArrayList<>();
 	
 	
 	/** Abre conexión con la base de datos
@@ -57,13 +57,13 @@ public class BaseDatos {
 				sent = "DROP TABLE IF EXISTS Entrenamiento";
 				logger.log( Level.INFO, "Statement: " + sent );
 				statement.executeUpdate( sent );
-				sent = "CREATE TABLE Entrenamiento (id INTEGER PRIMARY KEY AUTOINCREMENT, tipEntr int, horaI varchar(100), horaF varchar(100), precio int, idMonitor INTEGER REFERENCES Persona (dni));";
+				sent = "CREATE TABLE Entrenamiento (id INTEGER PRIMARY KEY AUTOINCREMENT, duracion int, tipEntr int, horaI varchar(100), horaF varchar(100), precio int, idMonitor varchar(9) REFERENCES Persona (dni));";
 				logger.log( Level.INFO, "Statement: " + sent );
 				statement.executeUpdate( sent );
 				sent = "DROP TABLE IF EXISTS EntrUsu";
 				logger.log( Level.INFO, "Statement: " + sent );
 				statement.executeUpdate( sent );
-				sent = "CREATE TABLE EntrUsu (id INTEGER PRIMARY KEY AUTOINCREMENT, idEntr KEY REFERENCES Entrenamiento (id), espera int, idPersona KEY REFERENCES Persona (dni));";
+				sent = "CREATE TABLE EntrUsu (id INTEGER PRIMARY KEY AUTOINCREMENT, idEntr REFERENCES Entrenamiento (id), espera int, idPersona REFERENCES Persona (dni));";
 				logger.log( Level.INFO, "Statement: " + sent );
 				statement.executeUpdate( sent );
 				sent = "DROP TABLE IF EXISTS Suscripccion";
@@ -79,6 +79,7 @@ public class BaseDatos {
 			return false;
 		}
 	}
+	
 	public static void getPersonas(){
 		try (Statement statement = conexion.createStatement()){			
 			String sent = "select * from Persona;";
@@ -134,8 +135,111 @@ public class BaseDatos {
 				personas.put(p.getDni(), p);
 			}
 		} catch (Exception e) {
-			// TODO: handle exception
 			logger.log( Level.SEVERE, "Excepción", e );
 		}
 	}
+	
+	public static int getEntrenamiento(boolean id) {
+		try (Statement statement = conexion.createStatement()){		
+			if(id) {	
+				String sent = "select * from Entremaniento;";
+				logger.log( Level.INFO, "Statement: " + sent );
+				ResultSet rs = statement.executeQuery( sent );
+				int dato = 0;
+				String dat = "";
+				Entrenamiento entr = new Entrenamiento();
+				while(rs.next()) {
+					dato = rs.getInt("id");
+					entr.setId(dato);
+					dato = rs.getInt("tipEntr");
+					entr.setTipo(TiposEntrenamientos.values()[dato]);
+					dat = rs.getString("horaI");
+					entr.setHoraInicio(dat);
+					dat = rs.getString("horaF");
+					entr.setHoraFin(dat);
+					dato = rs.getInt("precio");
+					entr.setPrecio(dato);
+					dato = rs.getInt("duracion");
+					entr.setDuracion(dato);
+					if(!personas.isEmpty()) {
+							getPersonas();
+					}
+					entr.setMonitor((Monitor) personas.get(rs.getString("idMonitor")));
+					
+					sent = "select * from EntrUsu where idEntr = " + entr.getId() + ";";
+					logger.log( Level.INFO, "Statement: " + sent );
+					ResultSet rs2 = statement.executeQuery( sent );
+					
+					while(rs2.next()) {
+						if(rs2.getInt("espera") == 1) {
+							entr.getListaEspera().add((Usuario) personas.get(rs2.getString("idPersona")));
+						}else {
+							entr.getAsistentes().add((Usuario) personas.get(rs2.getString("idPersona")));
+						}
+					}
+					entrenamientos.add(entr);
+				}
+			}
+		} catch (Exception e) {
+			logger.log( Level.SEVERE, "Excepción", e );
+		}
+		return 0;
+	}
+	
+	/** Inserta los entrenamientos a la tabla de Entrenamiento, tambien añade los usuarios a la tabla de EntrUsu
+	 * @param entrenamiento
+	 * @return
+	 */
+	public static int insertarEntrena(Entrenamiento entrenamiento) {
+		int tipo=0;
+		for(;tipo < TiposEntrenamientos.values().length; tipo++) {
+			if(TiposEntrenamientos.values()[tipo].equals(entrenamiento.getTipo()));
+		}
+		try (Statement statement = conexion.createStatement()) {
+			abrirConexion("BaseDatos.db", false);
+			String sent = "INSERT INTO Entrenamiento (tipEntr, horaI, horaF, precio, idMonitor) VALUES ('" +
+		               tipo + "', '" + entrenamiento.getHoraInicio() + "', '" + entrenamiento.getHoraFin() + "', " +
+		               entrenamiento.getPrecio() + ", '" + entrenamiento.getMonitor().getDni() + "');";
+			
+			logger.log(Level.INFO, "Statement: " + sent);
+			int insertados = statement.executeUpdate(sent);
+
+			if (insertados != 1)
+				return 0; // Error en inserción
+			
+			ResultSet rrss = statement.getGeneratedKeys(); // Genera un resultset ficticio con las claves generadas del
+															// último comando
+			rrss.next(); // Avanza a la única fila
+			int pk = rrss.getInt(1); // Coge la única columna (la primary key autogenerada)
+			entrenamiento.setId(pk);
+			
+			for(Usuario u: entrenamiento.getAsistentes()) {
+				sent = "INSERT INTO EntrUsu (idEntr, espera, idPersona) VALUES (" +
+			               entrenamiento.getId() + ", 0, '" + u.getDni() + "');";
+				logger.log(Level.INFO, "Statement: " + sent);
+				insertados = statement.executeUpdate(sent);
+			}
+			
+			for(Usuario u: entrenamiento.getListaEspera()) {
+				sent = "INSERT INTO EntrUsu (idEntr, espera, idPersona) VALUES (" +
+			               entrenamiento.getId() + ", 1, '" + u.getDni() + "');";
+				logger.log(Level.INFO, "Statement: " + sent);
+				insertados = statement.executeUpdate(sent);
+			}
+			
+			return 1;
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Excepción", e);
+			return 0;
+		}
+	}
+	
+	public static int insertarPersona() {
+		
+		return 0;
+	}
+	public static void posibleID(Entrenamiento entrena) {
+		insertarEntrena(entrena);
+	}
+	
 }

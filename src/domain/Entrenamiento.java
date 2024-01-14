@@ -3,7 +3,10 @@ package domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import bd.BaseDatos;
+
 public class Entrenamiento {
+	private int id;
     private TiposEntrenamientos tipo;
     private int duracion;
     private String horaInicio;
@@ -19,10 +22,77 @@ public class Entrenamiento {
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.monitor = monitor;
-        this.precio = precio; 
+        this.precio = precio;
+        BaseDatos.posibleID(this);
     }
     
-    public int getPrecio() {
+    public Entrenamiento() {}
+
+    public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public TiposEntrenamientos getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TiposEntrenamientos tipo) {
+		this.tipo = tipo;
+	}
+
+	public int getDuracion() {
+		return duracion;
+	}
+
+	public void setDuracion(int duracion) {
+		this.duracion = duracion;
+	}
+
+	public String getHoraInicio() {
+		return horaInicio;
+	}
+
+	public void setHoraInicio(String horaInicio) {
+		this.horaInicio = horaInicio;
+	}
+
+	public String getHoraFin() {
+		return horaFin;
+	}
+
+	public void setHoraFin(String horaFin) {
+		this.horaFin = horaFin;
+	}
+
+	public List<Usuario> getAsistentes() {
+		return asistentes;
+	}
+
+	public void setAsistentes(List<Usuario> asistentes) {
+		this.asistentes = asistentes;
+	}
+
+	public List<Usuario> getListaEspera() {
+		return listaEspera;
+	}
+
+	public void setListaEspera(List<Usuario> listaEspera) {
+		this.listaEspera = listaEspera;
+	}
+
+	public Monitor getMonitor() {
+		return monitor;
+	}
+
+	public void setMonitor(Monitor monitor) {
+		this.monitor = monitor;
+	}
+
+	public int getPrecio() {
 		return precio;
 	}
 
@@ -30,35 +100,7 @@ public class Entrenamiento {
 		this.precio = precio;
 	}
 
-	public TiposEntrenamientos getTipo() {
-        return tipo;
-    }
-
-    public int getDuracion() {
-        return duracion;
-    }
-
-    public String getHoraInicio() {
-        return horaInicio;
-    }
-
-    public String getHoraFin() {
-        return horaFin;
-    }
-
-    public List<Usuario> getAsistentes() {
-        return asistentes;
-    }
-
-    public List<Usuario> getListaEspera() {
-        return listaEspera;
-    }
-
-    public Monitor getMonitor() {
-        return monitor;
-    }
-
-    public void agregarAsistente(Usuario asistente) {
+	public void agregarAsistente(Usuario asistente) {
         if (asistentes.size() < 5) {
             asistentes.add(asistente);
             System.out.println("El asistente ha sido agregado al entrenamiento.");
@@ -78,4 +120,14 @@ public class Entrenamiento {
 				+ horaFin + ", asistentes=" + asistentes + ", listaEspera=" + listaEspera + ", monitor=" + monitor
 				+ ", precio=" + precio + "]";
 	}
+	
+//	Entrenamiento (id INTEGER PRIMARY KEY AUTOINCREMENT,
+//	tipEntr int,
+//	horaI varchar(100), 
+//	horaF varchar(100), precio int,
+//	idMonitor varchar(9) REFERENCES Persona (dni));"
+	
+//	EntrUsu (id INTEGER PRIMARY KEY AUTOINCREMENT, 
+//	idEntr REFERENCES Entrenamiento (id), espera int, 
+//	idPersona REFERENCES Persona (dni));"
 }

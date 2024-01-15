@@ -29,6 +29,8 @@ public class BaseDatos {
 	public static List<Entrenamiento> entrenamientos = new ArrayList<>();
 	
 	
+	
+	
 	/** Abre conexión con la base de datos
 	 * @param nombreBD	Nombre del fichero de base de datos
 	 * @param reiniciaBD	true si se quiere reiniciar la base de datos (se borran sus contenidos si los tuviera y se crean datos por defecto)

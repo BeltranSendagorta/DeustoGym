@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,7 +55,6 @@ public class VentanaInicioSesionUsuario {
 
     private void iniciarSesion(String nombreUsuario) {
         VentanaUsuario ventanaUsuario = new VentanaUsuario(nombreUsuario);
-        ventanaUsuario.mostrarVentana();
         frame.dispose();
     }
 

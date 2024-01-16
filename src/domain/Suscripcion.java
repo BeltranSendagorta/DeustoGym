@@ -1,6 +1,9 @@
 package domain;
 
-public class Suscripcion {
+import java.io.Serializable;
+
+public class Suscripcion implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private TipoSuscripcion tp;
 	private int descuento;
 	

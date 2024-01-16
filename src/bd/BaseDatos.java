@@ -197,7 +197,7 @@ public class BaseDatos {
 	 * @return
 	 */
 	public static int insertarEntrena(Entrenamiento entrenamiento) {
-		abrirConexion("BaseDatos.db", false);
+		abrirConexion("resources/db/BaseDatos.db", false);
 		try (Statement statement = conexion.createStatement(); Statement st = conexion.createStatement()) {
 			String sent = "INSERT INTO Entrenamiento (tipEntr, nombre,duracion ,horaI, horaF, precio, idMonitor) VALUES ('" +
 		               entrenamiento.getTipo().ordinal() + "', '"+ entrenamiento.getNombre() + "', '"+entrenamiento.getDuracion() + "', '" + entrenamiento.getHoraInicio() + "', '" + entrenamiento.getHoraFin() + "', " +
@@ -241,7 +241,7 @@ public class BaseDatos {
 	 * @return true si ha ido bien, false si no.
 	 */
 	public static boolean insertarPersona(Persona p) {
-		abrirConexion("BaseDatos.db", false);
+		abrirConexion("resources/db/BaseDatos.db", false);
 		try (Statement statement = conexion.createStatement()) {
 			String sent = "";
 			String sent2 = "";
@@ -285,7 +285,7 @@ public class BaseDatos {
 	
 	public static void actualizarBD() {
 		try {
-			abrirConexion("BaseDatos.db", true);
+			abrirConexion("resources/db/BaseDatos.db", true);
 			logger.log(Level.INFO, "Se ha borrado la base de datos");
 		}catch (Exception e) {
 			logger.log(Level.SEVERE, "Excepción", e);

@@ -1,5 +1,6 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -7,7 +8,8 @@ import java.util.logging.Logger;
 
 import bd.BaseDatos;
 
-public class Entrenamiento {
+public class Entrenamiento implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int id;
     private TiposEntrenamientos tipo;
     private String nombre;
@@ -129,8 +131,9 @@ public class Entrenamiento {
 
 	@Override
 	public String toString() {
-		return "Entrenamiento [tipo=" + tipo + ", duracion=" + duracion + ", horaInicio=" + horaInicio + ", horaFin="
-				+ horaFin + ", asistentes=" + asistentes + ", listaEspera=" + listaEspera + ", monitor=" + monitor
-				+ ", precio=" + precio + "]";
+//		return "Entrenamiento [tipo=" + tipo + ", duracion=" + duracion + ", horaInicio=" + horaInicio + ", horaFin="
+//				+ horaFin + ", asistentes=" + asistentes + ", listaEspera=" + listaEspera + ", monitor=" + monitor
+//				+ ", precio=" + precio + "]";
+		return this.getNombre();
 	}
 }

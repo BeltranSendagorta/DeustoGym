@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -7,7 +7,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import main.DeustoGym;
+import io.DeustoGym;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,7 +30,7 @@ public class VentanaUsuario {
     private String[] actividadesDisponibles = {"Spinning", "Yoga", "Boxeo", "Aeroyoga", "Pilates", "HIIt", "Entrenamiento funcional"};
 
     public VentanaUsuario(String nombreUsuario) {
-        frame = new JFrame("Ventana de Usuario");
+        /**frame = new JFrame("Ventana de Usuario");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setBackground(Color.WHITE);
@@ -378,6 +378,6 @@ public class VentanaUsuario {
         SwingUtilities.invokeLater(() -> {
             VentanaUsuario ventanaUsuario = new VentanaUsuario("UsuarioPrueba");
             ventanaUsuario.mostrarVentana();
-        });
+        });**/
     }
 }

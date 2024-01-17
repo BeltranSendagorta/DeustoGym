@@ -23,7 +23,7 @@ import domain.Usuario;
 
 public class BaseDatos {
 	private static Connection conexion;
-	private static Logger logger = Logger.getLogger( "BaseDeDatos" );
+	private static Logger logger = Logger.getLogger( "BaseDeDatos" );	
 	public static Map<String, Persona> personas = new HashMap<>();
 	public static List<Entrenamiento> entrenamientos = new ArrayList<>();
 	
@@ -56,7 +56,7 @@ public class BaseDatos {
 				sent = "DROP TABLE IF EXISTS Entrenamiento";
 				logger.log( Level.INFO, "Statement: " + sent );
 				statement.executeUpdate( sent );
-				sent = "CREATE TABLE Entrenamiento (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre varchar(100), duracion int, tipEntr int, horaI varchar(100), horaF varchar(100), precio int, idMonitor varchar(9) REFERENCES Persona (dni));";
+				sent = "CREATE TABLE Entrenamiento (id INTEGER PRIMARY KEY AUTOINCREMENT, nombre varchar(100), dia String, tipEntr int, horaI varchar(100), horaF varchar(100), precio int, idMonitor varchar(9) REFERENCES Persona (dni));";
 				logger.log( Level.INFO, "Statement: " + sent );
 				statement.executeUpdate( sent );
 				sent = "DROP TABLE IF EXISTS EntrUsu";
@@ -79,6 +79,75 @@ public class BaseDatos {
 		}
 	}
 	
+	
+	/** Busca a una persona por dni y por su tipo
+	 * @param dni Dni de la persona a buscar
+	 * @param tipo Tipo de Persona (0 Admin, 1 Usuario, 2 Monitor)
+	 * @return la Persona
+	 */
+	public static Persona getPersona(String dni, int tipo) {
+		Persona p = null;
+		try (Statement statement = conexion.createStatement(); Statement st = conexion.createStatement()){			
+			String sent = "select * from Persona where dni = '" + dni+"' ;";
+			logger.log( Level.INFO, "Statement: " + sent );
+			ResultSet rs = statement.executeQuery( sent );
+			int dato = 0;
+			String dat = "";
+			while( rs.next() ) { // Leer el resultset
+				dato = rs.getInt("tipo");
+				if(dato == tipo) {
+					switch (dato) {
+						case 0: { //Admin
+							p = new Administrador();
+							dat = rs.getString("contrasena");
+							((Administrador) p).setContrasenia(dat);
+							break;
+						}
+						case 1: { //Usuario
+							p = new Usuario();
+							dat = rs.getString("contrasena");
+							((Usuario) p).setContrasenia(dat);
+							sent = "select * from Suscripcion where idU = "+ rs.getString("dni") +";";
+							logger.log( Level.INFO, "Statement: " + sent );
+							ResultSet rs2 = st.executeQuery( sent );
+							while(rs2.next()) {
+								((Usuario) p).setS(new Suscripcion(TipoSuscripcion.values()[rs2.getInt("tipoSus")], rs2.getInt("descuento")));
+							}
+							break;
+						}
+						
+						case 2: { //Monitor
+							p = new Monitor();
+							dat = rs.getString("contrasena");
+							((Monitor) p).setContrasenia(dat);
+							sent = "select * from MonitorTipoEntr where idP = "+ rs.getString("dni") +";";
+							logger.log( Level.INFO, "Statement: " + sent );
+							ResultSet rs2 = st.executeQuery( sent );
+							while(rs2.next()) {
+								((Monitor) p).getClasesHabilitadas().add(TiposEntrenamientos.values()[rs2.getInt("tipoEntr")]);
+							}
+							break;
+						}
+						default: p= new Usuario();
+					}
+					dat = rs.getString("dni");
+					p.setDni(dat);
+					dat = rs.getString("nombre");
+					p.setNombre(dat);
+					dat = rs.getString("apellido");
+					p.setApellido(dat);
+					dato = rs.getInt("edad");
+					p.setEdad(dato);
+					return p;
+				}else {
+					break;
+				}
+			}
+		} catch (Exception e) {
+			logger.log( Level.SEVERE, "Excepción", e );
+		}	
+		return p;
+	}
 	/**
 	 * Coge a las personas de la base de datos (las divide entre, Usuario, Administrador, Monitor)  
 	 */
@@ -166,8 +235,8 @@ public class BaseDatos {
 				entr.setHoraFin(dat);
 				dato = rs.getInt("precio");
 				entr.setPrecio(dato);
-				dato = rs.getInt("duracion");
-				entr.setDuracion(dato);
+				dat = rs.getString("dia");
+				entr.setdiaSe(dat);
 				if(!personas.isEmpty()) {
 						getPersonas();
 				}
@@ -199,8 +268,8 @@ public class BaseDatos {
 	public static int insertarEntrena(Entrenamiento entrenamiento) {
 		abrirConexion("resources/db/BaseDatos.db", false);
 		try (Statement statement = conexion.createStatement(); Statement st = conexion.createStatement()) {
-			String sent = "INSERT INTO Entrenamiento (tipEntr, nombre,duracion ,horaI, horaF, precio, idMonitor) VALUES ('" +
-		               entrenamiento.getTipo().ordinal() + "', '"+ entrenamiento.getNombre() + "', '"+entrenamiento.getDuracion() + "', '" + entrenamiento.getHoraInicio() + "', '" + entrenamiento.getHoraFin() + "', " +
+			String sent = "INSERT INTO Entrenamiento (tipEntr, nombre,dia ,horaI, horaF, precio, idMonitor) VALUES ('" +
+		               entrenamiento.getTipo().ordinal() + "', '"+ entrenamiento.getNombre() + "', '"+entrenamiento.getdiaSe() + "', '" + entrenamiento.getHoraInicio() + "', '" + entrenamiento.getHoraFin() + "', " +
 		               entrenamiento.getPrecio() + ", '" + entrenamiento.getMonitor().getDni() + "');";
 			
 			logger.log(Level.INFO, "Statement: " + sent);
@@ -291,13 +360,17 @@ public class BaseDatos {
 			logger.log(Level.SEVERE, "Excepción", e);
 			logger.log(Level.INFO, "No se ha borrado la base de datos");
 		}
-		for (Entrenamiento entrenamiento : entrenamientos) {
+		List<Entrenamiento> entrs = entrenamientos;
+		Map<String, Persona> pers = personas;
+		entrenamientos.clear();
+		personas.clear();
+		for (Entrenamiento entrenamiento : entrs) {
 			insertarEntrena(entrenamiento);
 		}
-		for(Persona p: personas.values()) {
+		for(Persona p: pers.values()) {
 			insertarPersona(p);
 		}
-		logger.log(Level.INFO, "datos insertados en la base de datos");
+		logger.log(Level.INFO, "datos reinsertados en la base de datos");
 	}
 	
 	public static void posibleID(Entrenamiento entrena) {

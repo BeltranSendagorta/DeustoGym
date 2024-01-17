@@ -13,18 +13,18 @@ public class Entrenamiento implements Serializable{
 	private int id;
     private TiposEntrenamientos tipo;
     private String nombre;
-    private int duracion;
+    private String diaSe;
     private String horaInicio;
-    private String horaFin;
+    private String horaFin;    
     private List<Usuario> asistentes = new ArrayList<>();
     private List<Usuario> listaEspera = new ArrayList<>();
     private Monitor monitor;
     private int precio;
     private static Logger logger = Logger.getLogger( "Entrenamiento" );
     
-    public Entrenamiento(String nombre, TiposEntrenamientos tipo, int duracion, String horaInicio, String horaFin, Monitor monitor, int precio) {
+    public Entrenamiento(String nombre, TiposEntrenamientos tipo, String diaSe, String horaInicio, String horaFin, Monitor monitor, int precio) {
         this.tipo = tipo;
-        this.duracion = duracion;
+        this.diaSe = diaSe;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.monitor = monitor;
@@ -59,12 +59,12 @@ public class Entrenamiento implements Serializable{
 		this.tipo = tipo;
 	}
 
-	public int getDuracion() {
-		return duracion;
+	public String getdiaSe() {
+		return diaSe;
 	}
 
-	public void setDuracion(int duracion) {
-		this.duracion = duracion;
+	public void setdiaSe(String diaSe) {
+		this.diaSe = diaSe;
 	}
 
 	public String getHoraInicio() {
@@ -118,7 +118,7 @@ public class Entrenamiento implements Serializable{
 	public void agregarAsistente(Usuario asistente) {
         if (this.asistentes.size() < 5) {
             this.asistentes.add(asistente);
-            logger.log( Level.INFO, "El asistente:" + asistente +" ha sido agregado al"+this+ "entrenamiento. ");
+            logger.log( Level.INFO, "El asistente:" + asistente +" ha sido agregado al "+this+ "entrenamiento. ");
         } else {
             if (this.listaEspera.size() < 5) {
                 this.listaEspera.add(asistente);
@@ -131,9 +131,6 @@ public class Entrenamiento implements Serializable{
 
 	@Override
 	public String toString() {
-//		return "Entrenamiento [tipo=" + tipo + ", duracion=" + duracion + ", horaInicio=" + horaInicio + ", horaFin="
-//				+ horaFin + ", asistentes=" + asistentes + ", listaEspera=" + listaEspera + ", monitor=" + monitor
-//				+ ", precio=" + precio + "]";
 		return this.getNombre();
 	}
 }

@@ -1,8 +1,9 @@
 package domain;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
-public abstract class Persona implements Serializable{
+public abstract class Persona implements Serializable, Comparator<Persona>{
 	private static final long serialVersionUID = 1L;
 	private String nombre;
 	private String apellido;
@@ -50,6 +51,12 @@ public abstract class Persona implements Serializable{
 	
 	@Override
 	public boolean equals(Object obj) {
-		return this.dni == ((Persona) obj).getDni();
+		return this.dni.equals(((Persona) obj).getDni());
 	}
+	
+	@Override
+    public int compare(Persona persona1, Persona persona2) {
+        // Comparar por DNI (en este ejemplo, asumiendo que el DNI es un String)
+        return persona1.getDni().compareTo(persona2.getDni());
+    }
 }

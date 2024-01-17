@@ -1,33 +1,26 @@
-/**
- * 
- */
-package bd;
+package domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import domain.Administrador;
-import domain.Entrenamiento;
-import domain.Monitor;
-import domain.Suscripcion;
-import domain.TipoSuscripcion;
-import domain.TiposEntrenamientos;
-import domain.Usuario;
+import bd.BaseDatos;
 
-public class BaseDatosTest {
-	
+public class DomainTests {
 	public Monitor monitor1, monitor2;
 	public Suscripcion suscripcion1, suscripcion2, suscripcion3, suscripcion4, suscripcion5;
-	public Usuario usuario1, usuario2, usuario3, usuario4, usuario5;
-	public Administrador admin1, admin2;
+	public Usuario usuario1, usuario2, usuario3, usuario4, usuario5,usuarioE;
+	public Administrador admin1, admin2, adminE;
 	public Entrenamiento entrenamiento1, entrenamiento2, entrenamiento3;
 	
 	@Before
 	public void setUp() throws Exception {
         BaseDatos.abrirConexion("resources/db/BaseDatos.db", true);
-        
 	// Instancias de Monitor
 		monitor1 = new Monitor("123456789", "Juan", "Perez", 30, "contraseña123");
         monitor1.agregarClaseHabilitada(TiposEntrenamientos.SPINNING);
@@ -49,10 +42,12 @@ public class BaseDatosTest {
         usuario3 = new Usuario("333333333", "Elena", "Rodríguez", 40, "contraseña456", suscripcion3);
         usuario4 = new Usuario("444444444", "Carlos", "Fernández", 32, "clave789", suscripcion4);
         usuario5 = new Usuario("555555555", "Laura", "Gómez", 28, "usuario456", suscripcion5);
+        usuarioE = new Usuario("123456789", "Juan", "Perez", 30, "contraseña123", suscripcion1);
         
      // Instancias de Administrador
         admin1 = new Administrador("admin1DNI", "Admin1Nombre", "Admin1Apellido", 35, "admin1Password");
         admin2 = new Administrador("admin2DNI", "Admin2Nombre", "Admin2Apellido", 40, "admin2Password");
+        adminE = new Administrador("123456789", "Juan", "Perez", 30, "contraseña123");
         
      // Instancias de Entrenamiento
         entrenamiento1 = new Entrenamiento("Spinning Masterclass", TiposEntrenamientos.SPINNING, "Lunes", "08:00", "09:00", monitor1, 10);
@@ -67,32 +62,28 @@ public class BaseDatosTest {
         entrenamiento2.agregarAsistente(usuario5);
         entrenamiento2.agregarAsistente(usuario1);
         entrenamiento2.agregarAsistente(usuario2);
+        entrenamiento2.agregarAsistente(usuarioE);
 	}
+
 
 	@Test
-	public void test() {
-		BaseDatos.personas.clear();
-		BaseDatos.entrenamientos.clear();
-		
-		BaseDatos.getEntrenamiento();
-		BaseDatos.getPersonas();
-		
-		assertEquals("Admin1Apellido",BaseDatos.personas.get("admin1DNI").getApellido());
-		
-		assertEquals(3, BaseDatos.entrenamientos.size());
-		assertEquals(9, BaseDatos.personas.keySet().size());
-		
-		BaseDatos.personas.get("admin1DNI").setApellido("Gonzalez");
-		
-		BaseDatos.actualizarBD();  
-		
-		BaseDatos.personas.clear();
-		BaseDatos.entrenamientos.clear();
-		
-		BaseDatos.getEntrenamiento();
-		BaseDatos.getPersonas();
-		
-		assertEquals("Gonzalez", BaseDatos.personas.get("admin1DNI").getApellido());
+	public void testPersistencia() {
+		assertEquals(usuarioE, adminE);
+		assertEquals(adminE, monitor1);
 	}
-
+	@Test
+	public void testMonitor() {
+		assertEquals("Juan", monitor1.getNombre());
+		assertFalse(monitor1.equals(monitor2));
+		assertTrue(monitor1.getClasesHabilitadas().equals(Arrays.asList(TiposEntrenamientos.SPINNING, TiposEntrenamientos.YOGA)));
+		assertFalse(monitor1.getClasesHabilitadas().equals(monitor2.getClasesHabilitadas()));
+	}
+	
+	@Test
+	public void testEntrenamiento() {
+		assertEquals(monitor1, entrenamiento1.getMonitor());
+		assertTrue(entrenamiento1.getMonitor().getClasesHabilitadas().contains(entrenamiento1.getTipo()));
+		assertEquals(5, entrenamiento2.getAsistentes().size());
+		assertEquals(1, entrenamiento2.getListaEspera().size());
+	}
 }

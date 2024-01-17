@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,12 +22,12 @@ import domain.Factura;
 import domain.TipoSuscripcion;
 import domain.Usuario;
 
-public class DeustoGym {
-	
+public class DeustoGym {	
 	public static List<Factura> listF = new ArrayList<>();
 	private static Logger logger = Logger.getLogger( "DeustoGym" );
 	private static final String CSV_FILE = "resources/data/facturas.csv";
 	private static List<String> combinaciones = new ArrayList<String>(); 
+	public static SimpleDateFormat sdf2 = new SimpleDateFormat( "HH:mm" );
 	
 	 public static void guardarFacturas() {
 	        try (BufferedWriter writer = new BufferedWriter(new FileWriter(CSV_FILE, true))) {

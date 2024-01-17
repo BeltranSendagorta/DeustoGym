@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bd.BaseDatos;
+import io.DeustoGym;
 
 public class Factura implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -19,6 +20,8 @@ public class Factura implements Serializable{
 		this.usuario = usuario;
 		if(this.usuario.getS().getTp().getMaxE() != 0)
 			calcularEntrExtr();
+		calcularPago();
+		DeustoGym.listF.add(this);
 	}
 	public Usuario getUsuario() {
 		return usuario;
@@ -87,8 +90,7 @@ public class Factura implements Serializable{
 	}
 	@Override
 	public String toString() {
-		return "Factura [usuario=" + usuario + ", precioFinal=" + precioFinal + ", entrenamientosExtra="
-				+ entrenamientosExtra + ", pagos=" + pagos + ", pagado=" + pagado + "]";
+		return "Factura [usuario=" + usuario.getNombre()+ ", precioFinal=" + precioFinal+"€" + ", pagado=" + pagado + "]";
 	}
 	
 }

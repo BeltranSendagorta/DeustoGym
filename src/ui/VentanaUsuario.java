@@ -155,34 +155,39 @@ public class VentanaUsuario {
 			sabado=new Miclase();
 			domingo=new Miclase();
 			for(Entrenamiento e: BaseDatos.entrenamientos) {
-				if(e.getAsistentes().contains(this.u)) {
-					if(e.getHoraInicio().equals((i< 10 ? "0" : "")+i+":00")) {
-						switch (e.getdiaSe()) {
-						case "Lunes": {
-							lunes.getLista().add(e);
-							break;
-						}case "Martes": {
-							martes.getLista().add(e);
-							break;
-						}case "Miercoles": {
-							miercoles.getLista().add(e);
-							break;
-						}case "Jueves": {
-							jueves.getLista().add(e);
-							break;
-						}case "Viernes": {
-							viernes.getLista().add(e);
-							break;
-						}case "Sabado": {
-							sabado.getLista().add(e);
-							break;
-						}case "Domingo": {
-							domingo.getLista().add(e);
-							break;
-						}
-						default:
-							throw new IllegalArgumentException("Unexpected value: " + e.getdiaSe());
-						}
+				if(e.getHoraInicio().equals((i< 10 ? "0" : "")+i+":00")) {
+					switch (e.getdiaSe()) {
+					case "Lunes": {
+						if(!lunes.getLista().contains(e))
+						lunes.getLista().add(e);
+						break;
+					}case "Martes": {
+						if(!martes.getLista().contains(e))
+						martes.getLista().add(e);
+						break;
+					}case "Miercoles": {
+						if(!miercoles.getLista().contains(e))
+						miercoles.getLista().add(e);
+						break;
+					}case "Jueves": {
+						if(!jueves.getLista().contains(e))
+						jueves.getLista().add(e);
+						break;
+					}case "Viernes": {
+						if(!viernes.getLista().contains(e))
+						viernes.getLista().add(e);
+						break;
+					}case "Sabado": {
+						if(!sabado.getLista().contains(e))
+						sabado.getLista().add(e);
+						break;
+					}case "Domingo": {
+						if(!domingo.getLista().contains(e))
+						domingo.getLista().add(e);
+						break;
+					}
+					default:
+						throw new IllegalArgumentException("Unexpected value: " + e.getdiaSe());
 					}
 				}
 			}

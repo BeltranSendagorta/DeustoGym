@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -46,6 +47,7 @@ public class VentanaRegistro {
         JTextField usuarioTextField = new JTextField();
         JLabel edadLabel = new JLabel("Edad:");
         JTextField edadTextField = new JTextField("18");
+        edadTextField.setText("18");
         JLabel contraseñaLabel = new JLabel("Contraseña:");
         JPasswordField contraseñaPasswordField = new JPasswordField();
 
@@ -59,9 +61,12 @@ public class VentanaRegistro {
             public void actionPerformed(ActionEvent e) {
             	try {
                 TipoSuscripcion tipoSuscripcionSeleccionado = (TipoSuscripcion) tipoSuscripcionComboBox.getSelectedItem();
-                if(tipoSuscripcionComboBox!=null && !usuarioTextField.getText().equals("") && !nombreTextField.getText().equals("")
+                if(tipoSuscripcionSeleccionado!=null && !usuarioTextField.getText().equals("") && !nombreTextField.getText().equals("")
                 		&&!apellidoTextField.getText().equals("")&&!edadTextField.getText().equals("")&& !(new String(contraseñaPasswordField.getPassword()).equals("")) ) {
-                	new Usuario(usuarioTextField.getText(), nombreTextField.getText(), apellidoTextField.getText(),
+                	if(!Arrays.asList(TipoSuscripcion.values()).contains(tipoSuscripcionSeleccionado))
+                		new Usuario(usuarioTextField.getText(), nombreTextField.getText(), apellidoTextField.getText(),
+                			Integer.parseInt(edadTextField.getText()), new String(contraseñaPasswordField.getPassword()), new Suscripcion(TipoSuscripcion.Basica, 0));
+                	else new Usuario(usuarioTextField.getText(), nombreTextField.getText(), apellidoTextField.getText(),
                 			Integer.parseInt(edadTextField.getText()), new String(contraseñaPasswordField.getPassword()), new Suscripcion(tipoSuscripcionSeleccionado, 0));
                 }
                 VentanaInicioSesionUsuario ventanaInicioSesionUsuario = new VentanaInicioSesionUsuario();

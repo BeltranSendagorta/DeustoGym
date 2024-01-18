@@ -337,29 +337,32 @@ public class VentanaUsuario {
 		}
 	    JList<Entrenamiento> listaActividadesEntr = new JList<Entrenamiento>(modeloListaEntr);
 	    listaActividadesEntr.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                int index = listaActividades.locationToIndex(evt.getPoint());
-                entr = modeloListaEntr.getElementAt(index);
-                if(tipo == 1) {
-	                if(mostrarDialogoApuntarse(entr)) {
-	                	entr.agregarAsistente(u);
-	                	frame.revalidate();
-	    				frame.setVisible(true);
-	    				ventanaSele.dispose();
+	        @Override
+	        public void mouseClicked(MouseEvent evt) {
+	            int index = listaActividadesEntr.locationToIndex(evt.getPoint());  // Cambio aquí
+	            if (index >= 0 && index < modeloListaEntr.getSize()) {  // Cambio aquí
+	                entr = modeloListaEntr.getElementAt(index);
+	                if (tipo == 1) {
+	                    if (mostrarDialogoApuntarse(entr)) {
+	                        entr.agregarAsistente(u);
+	                        frame.revalidate();
+	                        frame.setVisible(true);
+	                        ventanaSele.dispose();
+	                    }
+	                } else {
+	                    if (mostrarDialogoDesapuntarse(entr)) {
+	                        if (entr.getAsistentes().contains(u)) {
+	                            entr.getAsistentes().remove(u);
+	                            frame.revalidate();
+	                            frame.setVisible(true);
+	                            ventanaSele.dispose();
+	                        }
+	                    }
 	                }
-                }else {
-                	if(mostrarDialogoDesapuntarse(entr)) {
- 	                	if(entr.getAsistentes().contains(u)) {
- 	                		entr.getAsistentes().remove(u);
- 	                		frame.revalidate();
- 	                		frame.setVisible(true);
- 	                		ventanaSele.dispose();
- 	                	}
- 	                }
-                }
-            }
-        });
+	            }
+	        }
+	    });
+
 	    lista.add(listaActividadesEntr);
 	    boton.addActionListener(new ActionListener() {
 			

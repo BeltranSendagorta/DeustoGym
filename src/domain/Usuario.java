@@ -7,7 +7,8 @@ public class Usuario extends Persona{
 	private Suscripcion s = new Suscripcion(TipoSuscripcion.Basica, 0);
 	private String contrasenia;
 	
-	public Usuario(String dni, String nombre, String apellido, int edad, String contrasenia, Suscripcion s) {
+	public Usuario(String dni, String nombre, String apellido,
+			int edad, String contrasenia, Suscripcion s) {
 		super(dni, nombre, apellido, edad);
 		this.s = s;
 		this.contrasenia = contrasenia;
@@ -20,7 +21,9 @@ public class Usuario extends Persona{
 	public Suscripcion getS() {
 		return this.s;
 	}
-
+	public Factura crearFactura() {
+		return new Factura(this);
+	}
 	public void setS(Suscripcion s) {
 		this.s = s;
 	}

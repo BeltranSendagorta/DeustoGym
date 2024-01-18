@@ -51,7 +51,6 @@ public class Factura implements Serializable{
 		this.precioFinal = precioFinal;
 	}
 	public List<String> getPagos() {
-		this.pagos.clear();
 		calcularPago();
 		return pagos;
 	}
@@ -79,18 +78,25 @@ public class Factura implements Serializable{
 			}
 		}
 	}
+	
 	public void calcularPago() {
+		this.pagos = new ArrayList<>();
 		if(this.usuario.getS().getTp().getMaxE() != 0)
-		calcularEntrExtr();
+			calcularEntrExtr();
 		this.precioFinal = this.usuario.getS().getTp().getPrecio() - (this.usuario.getS().getTp().getPrecio()* (this.usuario.getS().getDescuento()/100));
 		for(Entrenamiento e: this.entrenamientosExtra) {
 			this.precioFinal+=e.getPrecio();
 			this.pagos.add(e.toString()+"\\precio: "+ e.getPrecio()+"€");
 		}
 	}
+	
 	@Override
 	public String toString() {
 		return "Factura [usuario=" + usuario.getNombre()+ ", precioFinal=" + precioFinal+"€" + ", pagado=" + pagado + "]";
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		return this.usuario.equals(((Factura)obj).getUsuario());
+	}
 }

@@ -8,6 +8,7 @@ import domain.Suscripcion;
 import domain.TipoSuscripcion;
 import domain.TiposEntrenamientos;
 import domain.Usuario;
+import io.DeustoGym;
 import ui.VentanaSesion;
 
 public class PP {
@@ -19,10 +20,13 @@ public class PP {
     entrenamiento11, entrenamiento12, entrenamiento13, entrenamiento14, entrenamiento15, entrenamiento16, entrenamiento17, entrenamiento18, entrenamiento19, entrenamiento20;;
 	
 	public static void main(String[] args) {
-		//INICIAR DATOS (SOLO SI SE HA REINICIADO LA BD)
 		BaseDatos.abrirConexion("resources/db/BaseDatos.db", false);
+		BaseDatos.getPersonas();
+		BaseDatos.getEntrenamiento();
+		//INICIAR DATOS (SOLO SI SE HA REINICIADO LA BD)
 		BaseDatos.abrirConexion("resources/db/BaseDatos.db", true);
         
+		
 		// Instancias de Monitor
 		monitor1 = new Monitor("123456789", "Juan", "Perez", 30, "contraseña123");
         monitor1.agregarClaseHabilitada(TiposEntrenamientos.SPINNING);
@@ -79,7 +83,8 @@ public class PP {
         entrenamiento2.agregarAsistente(usuario4);
         entrenamiento2.agregarAsistente(usuario5);
         entrenamiento2.agregarAsistente(usuario2);
-      
+
+		DeustoGym.leerFacturas();
         VentanaSesion ventanaSesion = new VentanaSesion();
 	    ventanaSesion.mostrarVentana();
 	}

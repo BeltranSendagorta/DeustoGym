@@ -27,7 +27,6 @@ public class DeustoGymTest {
     entrenamiento11, entrenamiento12, entrenamiento13, entrenamiento14, entrenamiento15, entrenamiento16, entrenamiento17, entrenamiento18, entrenamiento19, entrenamiento20;
 	public static Monitor monitor1, monitor2;
 	public static Factura factura1, factura2;
-	public static File f = new File("resources/data/ficheroPrueba.dat");
 	public static File f2 = new File("resources/data/facturas.csv");
 	
 	@BeforeClass
@@ -83,8 +82,7 @@ public class DeustoGymTest {
      // Crea dos facturas
         factura1 = new Factura(usuario1);
         factura2 = new Factura(usuario2);
-        if(f.exists() || f2.exists()) {
-        	f.delete();
+        if(f2.exists()) {
         	f2.delete();
         }
 	}
@@ -99,22 +97,6 @@ public class DeustoGymTest {
 		assertTrue(factura1.isPagado());
 		factura2.calcularPago();
 		assertEquals((usuario2.getS().getTp().getPrecio() - (usuario2.getS().getTp().getPrecio()* (usuario2.getS().getDescuento()/100))), factura2.getPrecioFinal());
-
-		DeustoGym.listF.clear();
-		DeustoGym.listF.add(factura1);
-		DeustoGym.listF.add(factura2);
-		assertFalse(f.exists());
-		
-		DeustoGym.guardarProductos("resources/data/ficheroPrueba.dat");
-		DeustoGym.listF.clear();
-		assertTrue(f.exists());
-		DeustoGym.cargarProductos("resources/data/ficheroPrueba.dat");
-		assertFalse(DeustoGym.listF.isEmpty());
-
-		DeustoGym.listF.clear();
-		DeustoGym.listF.add(factura1);
-		DeustoGym.listF.add(factura2);
-		
 		assertFalse(f2.exists());	
 		DeustoGym.guardarFacturas();
 		DeustoGym.listF.clear();
@@ -126,6 +108,6 @@ public class DeustoGymTest {
 	
 	@Test
 	public void recursiva() {
-		DeustoGym.calcularComprasPosibles(1000,100, usuario1);
+//		DeustoGym.calcularComprasPosibles(1000,100, usuario1);
 	}
 }

@@ -39,9 +39,6 @@ public class Monitor extends Persona{
 	
 	@Override
 	public String toString() {
-		return "Monitor [contrasena=" + contrasena + ", clasesHabilitadas=" + clasesHabilitadas + ", getNombre()="
-				+ getNombre() + ", getApellido()=" + getApellido() + ", getDni()=" + getDni() + ", getEdad()=" + getEdad()
-				+ ", toString()=" + super.toString() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
-				+ "]";
+		return this.getNombre();
 	}
 }

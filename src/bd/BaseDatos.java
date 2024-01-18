@@ -352,25 +352,48 @@ public class BaseDatos {
 		}
 	}
 	
+	public static void actualizarPersonas(Map<String, Persona> personas) {
+	    Map<String, Persona> pers = new HashMap<>(personas); // Copiar el mapa original
+	    personas.clear();
+
+	    abrirConexion("resources/db/BaseDatos.db", false);
+
+	    try (Statement statement = conexion.createStatement()) {
+	        statement.executeUpdate("DELETE FROM Persona;");
+
+	        for (Persona p : pers.values()) {
+	            insertarPersona(p);
+	        }
+
+	        logger.log(Level.INFO, "Personas actualizadas en la base de datos");
+	    } catch (Exception e) {
+	        logger.log(Level.SEVERE, "Excepción al actualizar personas", e);
+	    }
+	}
+
+	public static void actualizarEntrenamientos(List<Entrenamiento> entrenamientos) {
+	    List<Entrenamiento> entr = new ArrayList<>(entrenamientos); // Copiar la lista original
+	    entrenamientos.clear();
+
+	    abrirConexion("resources/db/BaseDatos.db", false);
+
+	    try (Statement statement = conexion.createStatement()) {
+	        statement.executeUpdate("DELETE FROM Entrenamiento;");
+
+	        for (Entrenamiento entrenamiento : entr) {
+	            insertarEntrena(entrenamiento);
+	        }
+
+	        logger.log(Level.INFO, "Entrenamientos actualizados en la base de datos");
+	    } catch (Exception e) {
+	        logger.log(Level.SEVERE, "Excepción al actualizar entrenamientos", e);
+	    }
+	}
 	public static void actualizarBD() {
-		try {
-			abrirConexion("resources/db/BaseDatos.db", true);
-			logger.log(Level.INFO, "Se ha borrado la base de datos");
-		}catch (Exception e) {
-			logger.log(Level.SEVERE, "Excepción", e);
-			logger.log(Level.INFO, "No se ha borrado la base de datos");
-		}
-		List<Entrenamiento> entrs = entrenamientos;
-		Map<String, Persona> pers = personas;
-		entrenamientos.clear();
-		personas.clear();
-		for (Entrenamiento entrenamiento : entrs) {
-			insertarEntrena(entrenamiento);
-		}
-		for(Persona p: pers.values()) {
-			insertarPersona(p);
-		}
-		logger.log(Level.INFO, "datos reinsertados en la base de datos");
+		abrirConexion("resources/db/BaseDatos.db", true);
+	    actualizarPersonas(personas);
+	    actualizarEntrenamientos(entrenamientos);
+	    logger.log(Level.INFO, "Datos reinsertados en la base de datos");
 	}
 	
 	public static void posibleID(Entrenamiento entrena) {

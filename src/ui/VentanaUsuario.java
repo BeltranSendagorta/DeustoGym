@@ -260,24 +260,31 @@ public class VentanaUsuario {
 				if(e.getHoraInicio().equals((i< 10 ? "0" : "")+i+":00")) {
 					switch (e.getdiaSe()) {
 					case "Lunes": {
+						if(!lunes.getLista().contains(e))
 						lunes.getLista().add(e);
 						break;
 					}case "Martes": {
+						if(!martes.getLista().contains(e))
 						martes.getLista().add(e);
 						break;
 					}case "Miercoles": {
+						if(!miercoles.getLista().contains(e))
 						miercoles.getLista().add(e);
 						break;
 					}case "Jueves": {
+						if(!jueves.getLista().contains(e))
 						jueves.getLista().add(e);
 						break;
 					}case "Viernes": {
+						if(!viernes.getLista().contains(e))
 						viernes.getLista().add(e);
 						break;
 					}case "Sabado": {
+						if(!sabado.getLista().contains(e))
 						sabado.getLista().add(e);
 						break;
 					}case "Domingo": {
+						if(!domingo.getLista().contains(e))
 						domingo.getLista().add(e);
 						break;
 					}

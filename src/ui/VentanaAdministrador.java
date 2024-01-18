@@ -189,7 +189,7 @@ public class VentanaAdministrador {
 		Monitor profesor = e.getMonitor();
 		String usuariosApuntados = "";
 		for(Usuario u : e.getAsistentes()) {
-			usuariosApuntados+=e.getNombre()+", ";
+			usuariosApuntados+=u.getNombre()+", ";
 		}
 		JOptionPane.showMessageDialog(frame, "Clase: " + e + "\nProfesor: " + profesor
 				+ "\nUsuarios Apuntados: " + usuariosApuntados);
